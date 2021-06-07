@@ -7,6 +7,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useStateValue } from './utils/StateProvider.js';
 import { useEffect } from 'react';
 import LoadingPage from './LoadingPage';
+import Home from './Home';
 
 function App() {
   const [{user}, dispatch] = useStateValue();
@@ -39,7 +40,8 @@ function App() {
     <div className="app">
       {!user ? <Login /> : (
         <>
-          <List />
+          <Home />
+          {/* <List /> */}
         </>
       )}
     </div>
