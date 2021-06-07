@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import State from './utils/stateProvider';
-import { addCard } from './utils/stateProvider';
+import { StateProvider } from './utils/StateProvider';
+import reducer, { initialState } from './utils/reducer';
 
 ReactDOM.render(
   <React.StrictMode>
-    <State.Provider value={{addCard}}>
+    <StateProvider initialState={initialState} reducer={reducer}>
       <App />
-    </State.Provider>
+    </StateProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

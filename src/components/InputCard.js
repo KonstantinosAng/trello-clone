@@ -1,11 +1,9 @@
 import { Button, IconButton, InputBase, Paper } from '@material-ui/core'
 import React, { useState, useContext } from 'react';
 import ClearIcon from '@material-ui/icons/Clear';
-import stateProvider from '../utils/stateProvider';
 
 function InputCard({ setOpen }) {
   const [cardTitle, setCardTitle] = useState('');
-  const { addCard } = useContext(stateProvider);
 
   const handleChange = (e) => {
     setCardTitle(e.target.value);
@@ -13,7 +11,6 @@ function InputCard({ setOpen }) {
 
   function handleNewCard() {
     setOpen(false);
-    addCard(cardTitle);
   }
 
   return (
