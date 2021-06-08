@@ -3,12 +3,14 @@ import React from 'react'
 import Project from './components/Project';
 import { actionTypes } from './utils/reducer';
 import { useStateValue } from './utils/StateProvider'
+import { auth } from './utils/firebase';
 
 function Home() {
 
   const [state, dispatch] = useStateValue();
   
   const signOut = () => {
+    auth.signOut();
     dispatch({
       type: actionTypes.UNSET_USER
     })
