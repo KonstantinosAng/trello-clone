@@ -1,5 +1,5 @@
 import { Button, IconButton, InputBase, Paper } from '@material-ui/core'
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import ClearIcon from '@material-ui/icons/Clear';
 
 function InputCard({ setOpen }) {

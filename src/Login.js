@@ -5,6 +5,7 @@ import { useStateValue } from './utils/StateProvider.js';
 import Logo from './assets/logo.png';
 
 function Login() {
+  // eslint-disable-next-line
   const [state, dispatch] = useStateValue();
 
   const signIn = () => {
@@ -13,7 +14,9 @@ function Login() {
           type: actionTypes.SET_USER,
           user: result.user
         })
-      }).catch((error) => alert(error.message));
+      }).catch((error) => {
+        alert(error.message);
+      })
   }
 
   return (
