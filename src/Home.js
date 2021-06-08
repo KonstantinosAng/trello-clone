@@ -15,15 +15,17 @@ function Home() {
   }
 
   return (
-    <div>
-      <div className="flex flex-grow w-screen justify-end p-5">
-        <h2 className="mr-5 text-center self-center font-medium text-gray-600"> {state?.user?.displayName} </h2>
-        <Avatar className="mr-5" src={state?.user?.photoURL}/>
-        <Button className="rounded bg-[#0079BF] px-5 py-2 text-white text-xl font-bold active:outline-none" onClick={()=>signOut()}> Logout </Button>
+    <div className="bg-[#111E2F] h-screen flex flex-col justify-center items-center">
+      <div>
+        <div className="flex flex-grow w-screen justify-end p-5">
+          <h2 className="mr-5 text-center self-center font-medium text-blue-200"> {state?.user?.displayName} </h2>
+          <Avatar className="mr-5" src={state?.user?.photoURL}/>
+          <Button className="rounded bg-[#0079BF] px-5 py-2 text-white text-xl font-bold active:outline-none" onClick={()=>signOut()}> Logout </Button>
+        </div>
       </div>
-      <div className="bg-blue-300 w-3/5 mx-auto h-1/2 rounded-md">
+      <div className="bg-[#0079BF] mx-auto h-full rounded-md flex flex-col items-left flex-1 p-5">
         <h2 className="font-bold text-2xl text-gray-900 p-2"> Projects </h2>
-        <div className="w-auto sm:grid md:grid-cols-2 xl:grid-cols-3 3xl:flex flex-wrap justify-center" >
+        <div className="w-auto flex flex-wrap justify-center items-center">
           <Project projectName="Trello Clone"/> 
           <Project projectName="Trello Clone"/> 
           <Project projectName="Trello Clone"/> 
