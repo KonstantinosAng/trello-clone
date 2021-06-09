@@ -34,7 +34,7 @@ function Board() {
       })
     }
     handleProjectId()
-  }, [])
+  })
 
   return (
     <div className="bg-[#111E2F] h-screen w-full overflow-y-scroll">
