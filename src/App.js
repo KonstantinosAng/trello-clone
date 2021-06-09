@@ -7,8 +7,10 @@ import { useStateValue } from './utils/StateProvider.js';
 import { useEffect } from 'react';
 import LoadingPage from './pages/LoadingPage';
 import Home from './pages/Home';
+import Board from './pages/Board';
 import NotFound from './pages/NotFound';
 import {Route, BrowserRouter as Router, Switch} from 'react-router-dom';
+import Error from './pages/Error';
 
 
 function App() {
@@ -45,6 +47,8 @@ function App() {
           <Switch>
             <Route path="/" exact component={Home}/>
             <Route path="/home" exact component={Home}/>
+            <Route path="/home/board/:id" exact component={Board}/>
+            <Route path="/error/:id" exact component={Error}/>
             <Route component={NotFound}/>
           </Switch>
         </Router>

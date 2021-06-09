@@ -49,8 +49,8 @@ function InputCard() {
             </div>
             <div className="m-1 w-20 whitespace-nowrap">
               <Button onClick={()=>handleNewProject()} className="bg-green-500 text-white focus:outline-none hover:bg-green-400 cursor-pointer"> Add Card </Button>
-              <IconButton className="focus:outline-none cursor-pointer">
-                <ClearIcon onClick={()=>handleClearIcon()} className="focus:outline-none"/>
+              <IconButton onClick={()=>handleClearIcon()} className="focus:outline-none cursor-pointer">
+                <ClearIcon className="focus:outline-none"/>
               </IconButton>
               <p className={`text-red-500 text-lg animate-fadeOut pointer-events-none ${!invalidInput && "hidden"}`}> Invalid project Name! </p>
             </div>
@@ -71,8 +71,8 @@ function InputCard() {
             </div>
             <div className="m-1 w-20 whitespace-nowrap">
               <Button onClick={()=>handleNewProject()} className="bg-green-500 text-white focus:outline-none hover:bg-green-400 cursor-pointer"> Add Card </Button>
-              <IconButton className="focus:outline-none cursor-pointer">
-                <ClearIcon onClick={()=>handleClearIcon()} className="focus:outline-none"/>
+              <IconButton onClick={()=>handleClearIcon()} className="focus:outline-none cursor-pointer">
+                <ClearIcon className="focus:outline-none"/>
               </IconButton>
               <p className={`text-red-500 text-lg animate-fadeOut pointer-events-none ${!invalidInput && "hidden"}`}> Invalid project Name! </p>
             </div>

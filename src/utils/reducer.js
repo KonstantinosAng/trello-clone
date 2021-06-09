@@ -1,10 +1,12 @@
 export const initialState = {
   user: null,
+  activeProject: null
 };
 
 export const actionTypes = {
   SET_USER: "SET_USER",
-  UNSET_USER: "UNSET_USER"
+  UNSET_USER: "UNSET_USER",
+  SET_ACTIVE_PROJECT: "SET_ACTIVE_PROJECT"
 };
 
 const reducer = (state, action) => {
@@ -18,6 +20,11 @@ const reducer = (state, action) => {
       return {
         user: null
       }
+    case actionTypes.SET_ACTIVE_PROJECT:
+      return {
+        ...state,
+        activeProject: action.activeProject,
+      };
     default:
       return state;
   }
