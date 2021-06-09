@@ -8,6 +8,9 @@ import { useStateValue } from './utils/StateProvider.js';
 import { useEffect } from 'react';
 import LoadingPage from './LoadingPage';
 import Home from './Home';
+import NotFound from './NotFound';
+import {Route, BrowserRouter as Router, Switch} from 'react-router-dom';
+
 
 function App() {
   const [{user}, dispatch] = useStateValue();
@@ -38,12 +41,16 @@ function App() {
 
   return (
     <div className="app">
-      {!user ? <Login /> : (
-        <>
-          <Home />
+      {!user ? <Login /> :
+        <Router>
+          <Switch>
+            <Route path="/" exact component={Home}/>
+            <Route path="/home" exact component={Home}/>
+            <Route component={NotFound}/>
+          </Switch>
           {/* <List /> */}
-        </>
-      )}
+        </Router>
+      }
     </div>
   );
 }
