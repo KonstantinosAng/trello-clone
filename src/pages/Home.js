@@ -1,12 +1,12 @@
 import { Avatar, Button } from '@material-ui/core'
 import React from 'react'
-import Project from './components/Project';
-import { actionTypes } from './utils/reducer';
-import { useStateValue } from './utils/StateProvider'
-import { auth } from './utils/firebase';
-import db from './utils/firebase';
+import Project from '../components/Project';
+import { actionTypes } from '../utils/reducer';
+import { useStateValue } from '../utils/StateProvider'
+import { auth } from '../utils/firebase';
+import db from '../utils/firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import InputProject from './components/InputProject';
+import InputProject from '../components/InputProject';
 
 function Home() {
 

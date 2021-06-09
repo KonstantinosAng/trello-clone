@@ -1,14 +1,13 @@
 import './App.css';
-import List from './components/List.js';
-import Login from './Login';
+import Login from './pages/Login';
 import { auth } from './utils/firebase.js';
 import { actionTypes } from './utils/reducer.js';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useStateValue } from './utils/StateProvider.js';
 import { useEffect } from 'react';
-import LoadingPage from './LoadingPage';
-import Home from './Home';
-import NotFound from './NotFound';
+import LoadingPage from './pages/LoadingPage';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 import {Route, BrowserRouter as Router, Switch} from 'react-router-dom';
 
 
@@ -48,7 +47,6 @@ function App() {
             <Route path="/home" exact component={Home}/>
             <Route component={NotFound}/>
           </Switch>
-          {/* <List /> */}
         </Router>
       }
     </div>

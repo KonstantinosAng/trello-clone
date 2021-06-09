@@ -1,8 +1,8 @@
 import React from 'react'
-import { auth, provider } from './utils/firebase.js';
-import { actionTypes } from './utils/reducer.js';
-import { useStateValue } from './utils/StateProvider.js';
-import Logo from './assets/logo.png';
+import { auth, provider } from '../utils/firebase.js';
+import { actionTypes } from '../utils/reducer.js';
+import { useStateValue } from '../utils/StateProvider.js';
+import Logo from '../assets/logo.png';
 
 function Login() {
   // eslint-disable-next-line
