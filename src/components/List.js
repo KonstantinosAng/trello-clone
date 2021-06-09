@@ -4,12 +4,12 @@ import Title from './Title.js';
 import Card from './Card.js';
 import InputContainer from './InputContainer.js';
 
-function List() {
+function List({ title }) {
   return (
     <div>
-      <Paper className="w-80 bg-[#EBECF0] ml-2" >
+      <Paper className="w-80 bg-[#EBECF0] ml-5" >
         <CssBaseline />
-        <Title title='Todo'/>
+        <Title title={title}/>
         <Card title='Make a trello clone'/>
         <Card title='Make a trello clone'/>
         <Card title='Make a trello clone'/>

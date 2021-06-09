@@ -3,7 +3,7 @@ import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
 
 function Project({ projectId, projectName }) {
-
+  //eslint-disable-next-line
   const [state, dispatch] = useStateValue();
 
   const handleActiveProject = () => {

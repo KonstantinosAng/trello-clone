@@ -8,13 +8,14 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      nativeWindowOpen: true
     }
   })
 
   win.loadURL('http://localhost:3000');
 
-  win.webContents.openDevTools({mode: 'undocked'});
+  // win.webContents.openDevTools({mode: 'undocked'});
 }
 
 app.whenReady().then(createWindow)
