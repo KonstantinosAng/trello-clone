@@ -4,11 +4,15 @@ import Project from './components/Project';
 import { actionTypes } from './utils/reducer';
 import { useStateValue } from './utils/StateProvider'
 import { auth } from './utils/firebase';
+import db from './utils/firebase';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import InputProject from './components/InputProject';
 
 function Home() {
 
   const [state, dispatch] = useStateValue();
-  
+  const [projects] = useCollection(db.collection(state.user.email));
+
   const signOut = () => {
     auth.signOut();
     dispatch({
@@ -26,10 +30,10 @@ function Home() {
       <div className="flex flex-col justify-center items-center">
         <h2 className="font-bold text-2xl sm:text-4xl text-[#0079BF] px-5 py-2"> Projects </h2>
         <div className="px-5 my-10 w-full flex flex-wrap justify-evenly place-items-left">
-          <Project projectName="Trello Clone"/> 
-          <Project projectName="Netflix Clone"/> 
-          <Project projectName="Facebook Clone"/> 
-          <Project projectName="Add Project"/> 
+          {projects?.docs.map(doc => (
+            <Project key={doc.id} projectName={doc.data().projectName}/>
+          ))}
+          <InputProject/>
         </div>
         </div>
     </div>

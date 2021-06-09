@@ -8,7 +8,22 @@ module.exports = {
         '2xs': '240px',
         'xs': '468px',
         '3xl': "2000px"
-      }
+      },
+      animation: {
+        'fadeOut': 'fadeOut 2s linear forwards'
+      },
+      keyframes: {
+        fadeOut: {
+          'from': {
+            opacity: '1',
+            PointerEvent: 'all',
+          },
+          'to': {
+            opacity: '0',
+            PointerEvent: 'none',
+          },
+        },
+      },
     },
   },
   variants: {

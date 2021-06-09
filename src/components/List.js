@@ -13,7 +13,7 @@ function List() {
         <Card title='Make a trello clone'/>
         <Card title='Make a trello clone'/>
         <Card title='Make a trello clone'/>
-        <InputContainer />
+        <InputContainer inputName="Add a Card"/>
       </Paper>
     </div>
   )
