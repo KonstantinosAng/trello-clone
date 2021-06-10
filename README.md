@@ -1,6 +1,6 @@
 # Trello clone
 
-A [trello clone](https://trello.com) app using ElectronJS and ReactJS.
+A [trello clone](https://trello.com) app using ReactJS, TailwindCSS and Material UI Icons for the frontend and Firebase for authorization, authentication and storing.
 
 ## Usage
 
