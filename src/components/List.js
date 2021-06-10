@@ -7,7 +7,7 @@ import InputContainer from './InputContainer.js';
 function List({ title }) {
   return (
     <div>
-      <Paper className="w-80 bg-[#EBECF0] ml-5" >
+      <Paper className="w-80 bg-[#EBECF0] ml-5 flex flex-col flex-grow" >
         <CssBaseline />
         <Title title={title}/>
         <Card title='Make a trello clone'/>

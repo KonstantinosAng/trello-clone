@@ -1,10 +1,12 @@
 import React from 'react';
 import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
+import { useHistory } from 'react-router-dom';
 
 function Project({ projectId, projectName }) {
   //eslint-disable-next-line
   const [state, dispatch] = useStateValue();
+  const history = useHistory();
 
   const handleActiveProject = () => {
 
@@ -12,8 +14,7 @@ function Project({ projectId, projectName }) {
       type: actionTypes.SET_ACTIVE_PROJECT,
       activeProject: projectId
     })
-    window.location.replace(`home/board/${projectId}`)
-
+    history.push(`home/board/${projectId}`)
   }
 
   return (

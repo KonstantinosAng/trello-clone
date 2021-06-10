@@ -29,12 +29,12 @@ function Board() {
           })
         } else {
           params.append('=', 'project not found')
-          window.location.replace('/error/' + params.toString())
+          history.push(`/error/${params.toString()}`)
         }
-      })
+      }).catch(error => console.error(error))
     }
     handleProjectId()
-  })
+  }, [id, state.user.email, history, dispatch])
 
   return (
     <div className="bg-[#111E2F] h-screen w-full overflow-y-scroll">

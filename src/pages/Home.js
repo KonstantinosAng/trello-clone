@@ -25,7 +25,7 @@ function Home() {
       <div className="flex flex-wrap items-center text-center justify-evenly xs:justify-end p-5">
         <h2 className="xs:mr-5 text-center self-center font-medium text-sm xs:text-lg text-blue-200"> {state?.user?.displayName} </h2>
         <Avatar className="xs:mr-5 object-contain cursor-pointer" src={state?.user?.photoURL}/>
-        <Button className="rounded bg-[#0079BF] px-5 py-2 text-gray-300 hover:text-gray-100 text-xs sm:text-xl font-bold active:outline-none" onClick={()=>signOut()}> Logout </Button>
+        <Button className="rounded bg-red-500 px-5 py-2 text-gray-300 hover:text-gray-100 text-xs sm:text-xl font-bold active:outline-none" onClick={()=>signOut()}> Logout </Button>
       </div>
       <div className="flex flex-col justify-center items-center">
         <h2 className="font-bold text-2xl sm:text-4xl text-[#0079BF] px-5 py-2"> Projects </h2>
