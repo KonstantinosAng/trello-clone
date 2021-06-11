@@ -24,6 +24,9 @@ module.exports = {
           },
         },
       },
+      backgroundImage: {
+        'photoSidebar': "url('/src/assets/backgroundPhotos.jpg')",
+    },
     },
   },
   variants: {

@@ -24,7 +24,8 @@ function InputCard() {
     }
 
     db.collection(state.user.email).add({
-      projectName: cardTitle
+      projectName: cardTitle,
+      backgroundColor: 'bg-[#111E2F]'
     }).then().catch(err => {
       console.error(err);
     })
