@@ -58,7 +58,7 @@ function Board() {
     if (backgroundColor !== '') {
       updateBackgroundColor()
     }
-  }, [backgroundColor])
+  }, [id, state.user.email, backgroundColor])
 
   return (
     <div className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
