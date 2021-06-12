@@ -12,6 +12,7 @@ function Board() {
   const [state, dispatch] = useStateValue();
   const [activeProjectName, setActiveProjectName] = useState();
   const [backgroundColor, setBackgroundColor] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('')
   let { id } = useParams();
   const history = useHistory()
   
@@ -42,11 +43,13 @@ function Board() {
   useEffect(() => {
     function pullBackgroundColor() {
       db.collection(state.user.email).doc(id).get().then(docSnapshot => {
-        setBackgroundColor(docSnapshot.data().backgroundColor);
+        if (docSnapshot.data().backgroundColor !== 'blank') {
+          setBackgroundColor(docSnapshot.data().backgroundColor);
+        }
       })
     }
     pullBackgroundColor()
-  }, [])
+  }, [state.user.email, id])
 
   /* Update Background color */
   useEffect(() => {
@@ -60,10 +63,49 @@ function Board() {
     }
   }, [id, state.user.email, backgroundColor])
 
+  /* Pull imageBackground only on restart */
+  useEffect(() => {
+    function pullBackgroundImage() {
+      db.collection(state.user.email).doc(id).get().then(docSnapshot => {
+        if (docSnapshot.data().backgroundImage !== 'blank') {
+          setPhotoUrl(docSnapshot.data().backgroundImage);
+        }
+      })
+    }
+    pullBackgroundImage()
+  }, [state.user.email, id])
+
+  /* Update image background */
+  useEffect(() => {
+    function updateBackgroundImage() {
+      db.collection(state.user.email).doc(id).update({
+        backgroundImage: photoUrl
+      })
+    }
+    if (photoUrl !== '') {
+      updateBackgroundImage()
+    }
+  }, [state.user.email, id, photoUrl])
+
+  /* Update Background Image */
+  useEffect(() => {
+    function addBackgroundImage() {
+      if (photoUrl !== 'blank') {
+        document.getElementById('board__root__element').style.backgroundImage = `url(${photoUrl})`
+        document.getElementById('board__root__element').style.backgroundRepeat = 'no-repeat';
+        document.getElementById('board__root__element').style.backgroundSize = 'cover';
+        document.getElementById('board__root__element').style.boxSizing = 'border-box';
+      } else {
+        document.getElementById('board__root__element').style.backgroundImage = 'none';
+      }
+    }
+    addBackgroundImage()
+  }, [photoUrl])
+
   return (
-    <div className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
+    <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
       {/* Header */}
-      <BoardHeader setBackgroundColor={setBackgroundColor} name={activeProjectName}/>
+      <BoardHeader setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName}/>
       {/* Lists */}
       <div className="flex flex-grow">
         <List title="Todo"/>
