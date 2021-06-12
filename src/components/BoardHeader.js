@@ -48,8 +48,8 @@ function BoardHeader({ setBackgroundColor, setPhotoUrl, name, setActiveProjectNa
         )}
       </div>
       <div className="flex items-center justify-evenly">
-        <Avatar className="mx-2 object-contain cursor-pointer" src={state?.user?.photoURL}/>
-        <Button className="rounded bg-red-500 px-5 py-2 mx-2 text-gray-200 hover:text-white text-xs sm:text-xl font-bold active:outline-none" onClick={()=>signOut()}> Logout </Button>
+        <Avatar className="mx-2 object-contain cursor-pointer shadow-xl" src={state?.user?.photoURL}/>
+        <Button className="rounded bg-red-500 px-5 py-2 mx-2 text-gray-200 hover:text-white text-xs sm:text-xl font-bold active:outline-none shadow-xl" onClick={()=>signOut()}> Logout </Button>
         <PaletteIcon onClick={()=>handleSidebar()} className="cursor-pointer text-4xl text-black hover:text-gray-500" />
         <Sidebar setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} setClassName={setClassName} className={className} />          
       </div>

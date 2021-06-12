@@ -47,7 +47,7 @@ function InputList({ activeProjectNameListsCollection, listPosition }) {
       </div>
       </Collapse>
       <Collapse in={!open}>
-        <Paper onClick={()=>setOpen(!open)} elevation={0} className="cursor-pointer p-1 pl-2 m-1 mt-0 bg-[#EBECF0] hover:bg-gray-300">
+        <Paper onClick={()=>setOpen(!open)} elevation={0} className="cursor-pointer p-1 pl-2 m-1 mt-0 bg-[#EBECF0] hover:bg-gray-300 shadow-xl">
           <Typography className="">
             + Add a list
           </Typography>
