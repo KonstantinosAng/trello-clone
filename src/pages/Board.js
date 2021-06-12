@@ -5,30 +5,35 @@ import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
 import { useParams, useHistory } from 'react-router-dom';
 import db from '../utils/firebase';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import InputList from '../components/InputList';
 
 
 function Board() {
   
   const [state, dispatch] = useStateValue();
-  const [activeProjectName, setActiveProjectName] = useState();
+  const [activeProjectName, setActiveProjectName] = useState('');
+  const [activeProjectNameListsCollection, setActiveProjectNameListsCollection] = useState();
   const [backgroundColor, setBackgroundColor] = useState('');
-  const [photoUrl, setPhotoUrl] = useState('')
-  let { id } = useParams();
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [listPosition, setListPosition] = useState(0);
+  const { projectID } = useParams();
   const history = useHistory()
-  
+  const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position'));
+
   /* Search for project in database */
   useEffect(() => {
-    function handleProjectId() {
+    async function handleProjectId() {
       const params = new URLSearchParams()
-      
-      db.collection(state.user.email).doc(id).get().then(docSnapshot => {
-        if (docSnapshot.exists) {
+      await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
+        if (docSnapshot?.exists) {
           setActiveProjectName(docSnapshot.data().projectName);
+          setActiveProjectNameListsCollection(db.collection(state.user.email).doc(projectID).collection('lists'));
           params.append('q', true);
           history.push({search: params.toString()})
           dispatch({
             type: actionTypes.SET_ACTIVE_PROJECT,
-            activeProject: id
+            activeProject: projectID
           })
         } else {
           params.append('=', 'project not found')
@@ -37,55 +42,55 @@ function Board() {
       }).catch(error => console.error(error))
     }
     handleProjectId()
-  }, [id, state.user.email, history, dispatch])
+  }, [projectID, state.user.email, history, dispatch])
 
   /* Pull color only on restart */
   useEffect(() => {
-    function pullBackgroundColor() {
-      db.collection(state.user.email).doc(id).get().then(docSnapshot => {
-        if (docSnapshot.data().backgroundColor !== 'blank') {
+    async function pullBackgroundColor() {
+      await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
+        if (docSnapshot?.data().backgroundColor !== 'blank') {
           setBackgroundColor(docSnapshot.data().backgroundColor);
         }
       })
     }
     pullBackgroundColor()
-  }, [state.user.email, id])
+  }, [state.user.email, projectID])
 
   /* Update Background color */
   useEffect(() => {
-    function updateBackgroundColor() {
-      db.collection(state.user.email).doc(id).update({
+    async function updateBackgroundColor() {
+      await db.collection(state.user.email).doc(projectID).update({
         backgroundColor: backgroundColor
       })
     }
     if (backgroundColor !== '') {
       updateBackgroundColor()
     }
-  }, [id, state.user.email, backgroundColor])
+  }, [projectID, state.user.email, backgroundColor])
 
   /* Pull imageBackground only on restart */
   useEffect(() => {
-    function pullBackgroundImage() {
-      db.collection(state.user.email).doc(id).get().then(docSnapshot => {
-        if (docSnapshot.data().backgroundImage !== 'blank') {
+    async function pullBackgroundImage() {
+      await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
+        if (docSnapshot?.data().backgroundImage !== 'blank') {
           setPhotoUrl(docSnapshot.data().backgroundImage);
         }
       })
     }
     pullBackgroundImage()
-  }, [state.user.email, id])
+  }, [state.user.email, projectID])
 
   /* Update image background */
   useEffect(() => {
-    function updateBackgroundImage() {
-      db.collection(state.user.email).doc(id).update({
+    async function updateBackgroundImage() {
+      await db.collection(state.user.email).doc(projectID).update({
         backgroundImage: photoUrl
       })
     }
     if (photoUrl !== '') {
       updateBackgroundImage()
     }
-  }, [state.user.email, id, photoUrl])
+  }, [state.user.email, projectID, photoUrl])
 
   /* Update Background Image */
   useEffect(() => {
@@ -102,16 +107,39 @@ function Board() {
     addBackgroundImage()
   }, [photoUrl])
 
+  /* Update Project title */
+  useEffect(() => {
+    async function updateProjectName() {
+      await db.collection(state.user.email).doc(projectID).update({
+        projectName: activeProjectName
+      })
+    }
+    if (activeProjectName !== '') {
+      updateProjectName();
+    }
+  }, [activeProjectName, state.user.email, projectID])
+
+  /* Update new List Position */
+  useEffect(() => {
+    async function calculateNewListPosition() {
+      await db.collection(state.user.email).doc(projectID).collection('lists').get().then(docSnapshot => {
+        console.log(docSnapshot.docs.length)
+        setListPosition(docSnapshot.docs.length);
+      })
+    }
+    calculateNewListPosition()
+  }, [state.user.email, projectID, lists])
+
   return (
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
       {/* Header */}
-      <BoardHeader setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName}/>
+      <BoardHeader setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
       {/* Lists */}
       <div className="flex flex-grow">
-        <List title="Todo"/>
-        <List title="Assigned"/>
-        <List title="Testing"/>
-        <List title="Done"/>
+        {lists?.docs.map(doc => (
+          <List listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+        ))}
+        <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
       </div>
     </div>
   )

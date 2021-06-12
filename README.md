@@ -1,6 +1,6 @@
 # Trello clone
 
-A [trello clone](https://trello.com) app using ReactJS, TailwindCSS and Material UI Icons for the frontend and Firebase for authorization, authentication and storing.
+A [trello clone](https://trello.com) app using ReactJS, TailwindCSS and Material UI Icons for the frontend, Firebase for authorization, authentication and storing and Pexels for the image data.
 
 ## Usage
 
@@ -29,5 +29,7 @@ yarn run make
 Electron app
 <br>
 <p align="center">
-  <img src="img/img.png"/>
+  <img src="img/img1.png"/>
+  <img src="img/img2.png"/>
+  <img src="img/img3.png"/>
 </p>

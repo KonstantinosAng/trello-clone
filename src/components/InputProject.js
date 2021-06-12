@@ -11,11 +11,14 @@ function InputCard() {
   // eslint-disable-next-line
   const [state, dispatch] = useStateValue();
 
+  /* Update list title */
   const handleChange = (e) => {
     setCardTitle(e.target.value);
   }
 
-  function handleNewProject() {
+  /* Create project */
+  async function handleNewProject() {
+    
     if (cardTitle === "") {
       setInvalidInput(true);
       return
@@ -23,16 +26,20 @@ function InputCard() {
       setInvalidInput(false);
     }
 
-    db.collection(state.user.email).add({
+    /* Create project with default values */
+    await db.collection(state.user.email).add({
       projectName: cardTitle,
-      backgroundColor: 'bg-[#111E2F]'
+      backgroundColor: 'bg-indigo-500',
+      backgroundImage: 'blank'
     }).then().catch(err => {
       console.error(err);
     })
+
     setOpen(false);
     setCardTitle('');
   }
 
+  /* Hide project input */
   function handleClearIcon() {
     setCardTitle('');
     setOpen(false);
@@ -45,12 +52,12 @@ function InputCard() {
           <Collapse in={open}>
             <div className="">
               <Paper className="m-1 pb-4">
-                <InputBase onChange={handleChange} onBlur={()=>setOpen(false)} value={cardTitle} multiline fullWidth className="m-1 pb-2" placeholder="Enter a project name"/>
+                <InputBase onChange={handleChange} value={cardTitle} multiline fullWidth className="m-1 pb-2" placeholder="Enter a project name"/>
               </Paper>
             </div>
             <div className="m-1 w-20 whitespace-nowrap">
-              <Button onClick={()=>handleNewProject()} className="bg-green-500 text-white focus:outline-none hover:bg-green-400 cursor-pointer"> Add Card </Button>
-              <IconButton onClick={()=>handleClearIcon()} className="focus:outline-none cursor-pointer">
+              <Button onClick={()=>handleNewProject()} className="bg-green-500 text-white font-semibold focus:outline-none hover:bg-green-400 cursor-pointer"> Add Card </Button>
+              <IconButton onClick={()=>handleClearIcon()} className="ml-2 focus:outline-none cursor-pointer">
                 <ClearIcon className="focus:outline-none"/>
               </IconButton>
               <p className={`text-red-500 text-lg animate-fadeOut pointer-events-none ${!invalidInput && "hidden"}`}> Invalid project Name! </p>
@@ -66,13 +73,13 @@ function InputCard() {
         <div className="bg-gray-300 rounded-lg hover:bg-gray-300 m-5 px-5 py-16 w-full xs:max-w-xs flex flex-col flex-grow justify-center place-items-center">
           <Collapse in={open}>
             <div className="">
-              <Paper className="m-1 pb-4">
-                <InputBase onChange={handleChange} onBlur={()=>setOpen(false)} value={cardTitle} multiline fullWidth className="m-1 pb-2" placeholder="Enter a project name"/>
+              <Paper className="m-1 pb-4 shadow-xl">
+                <InputBase onChange={handleChange} value={cardTitle} multiline fullWidth className="m-1 pb-2" placeholder="Enter a project name"/>
               </Paper>
             </div>
             <div className="m-1 w-20 whitespace-nowrap">
-              <Button onClick={()=>handleNewProject()} className="bg-green-500 text-white focus:outline-none hover:bg-green-400 cursor-pointer"> Add Card </Button>
-              <IconButton onClick={()=>handleClearIcon()} className="focus:outline-none cursor-pointer">
+              <Button onClick={()=>handleNewProject()} className="bg-green-500 text-white shadow-xl font-semibold focus:outline-none hover:bg-green-400 cursor-pointer"> Add Card </Button>
+              <IconButton onClick={()=>handleClearIcon()} className="ml-2 shadow-sm focus:outline-none cursor-pointer">
                 <ClearIcon className="focus:outline-none"/>
               </IconButton>
               <p className={`text-red-500 text-lg animate-fadeOut pointer-events-none ${!invalidInput && "hidden"}`}> Invalid project Name! </p>

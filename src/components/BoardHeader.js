@@ -3,17 +3,19 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { useHistory } from 'react-router-dom';
 import PaletteIcon from '@material-ui/icons/Palette';
 import { useStateValue } from '../utils/StateProvider';
-import { Avatar, Button } from '@material-ui/core'
+import { Avatar, Button, InputBase } from '@material-ui/core'
 import { actionTypes } from '../utils/reducer';
 import { auth } from '../utils/firebase';
 import Sidebar from './Sidebar';
 
-function BoardHeader({ setBackgroundColor, setPhotoUrl, name }) {
+function BoardHeader({ setBackgroundColor, setPhotoUrl, name, setActiveProjectName }) {
   const history = useHistory();
   const [className, setClassName] = useState('hidden -right-full');
+  const [changeTitle, setChangeTitle] = useState(false);
 
   const [state, dispatch] = useStateValue();
 
+  /* handle signout */
   const signOut = () => {
     auth.signOut();
     dispatch({
@@ -21,6 +23,7 @@ function BoardHeader({ setBackgroundColor, setPhotoUrl, name }) {
     })
   }
   
+  /* Hide/show sidebar on click */
   const handleSidebar = () => {
     if (className === 'hidden -right-full') {
       setClassName('flex right-0')
@@ -29,11 +32,20 @@ function BoardHeader({ setBackgroundColor, setPhotoUrl, name }) {
     }
   }
 
+  /* Set project name on user change */
+  const updateProjectName = (e) => {
+    setActiveProjectName(e.target.value);
+  }
+
   return (
     <div className="px-5 py-4 text-left flex items-center">
       <div className="flex flex-grow items-center text-black">
         <ArrowBackIosIcon onClick={()=>history.push('/home')} className="text-4xl cursor-pointer hover:text-gray-500 mr-2"/>
-        <h2 className="text-3xl"> {name} </h2>
+        {changeTitle ? (
+          <InputBase fullWidth className="text-3xl cursor-pointer p-0" onBlur={()=>setChangeTitle(!changeTitle)} value={name} onChange={(e)=>updateProjectName(e)}/>
+        ) : (
+          <h2 onClick={()=>setChangeTitle(!changeTitle)} className="text-3xl cursor-pointer"> {name} </h2>
+        )}
       </div>
       <div className="flex items-center justify-evenly">
         <Avatar className="mx-2 object-contain cursor-pointer" src={state?.user?.photoURL}/>

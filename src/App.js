@@ -47,7 +47,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={Home}/>
             <Route path="/home" exact component={Home}/>
-            <Route path="/home/board/:id" exact component={Board}/>
+            <Route path="/home/board/:projectID" exact component={Board}/>
             <Route path="/error/:id" exact component={Error}/>
             <Route component={NotFound}/>
           </Switch>
