@@ -1,14 +1,18 @@
 import React from 'react';
 import { Paper } from '@material-ui/core';
-import { useDrag, useDrop } from 'react-dnd';
+import { Draggable } from 'react-beautiful-dnd';
 
-function Card({ title }) {
+function Card({ title, id, position }) {
   return (
-    <div>
-      <Paper className="p-1 pl-2 m-1 cursor-pointer shadow-md">
-        {title}
-      </Paper>
-    </div>
+    <Draggable draggableId={id} index={position}>
+      {(provided) => (
+        <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+          <Paper className="p-1 pl-2 m-1 cursor-pointer shadow-md">
+            {title}
+          </Paper>
+        </div>
+      )}
+    </Draggable>
   )
 }
 

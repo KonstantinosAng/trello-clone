@@ -5,12 +5,8 @@ import InputCard from './InputCard';
 function InputContainer({ activeProjectNameListCardCollection, inputName, cardPosition, listPosition }) {
   const [open, setOpen] = useState(false);
   
-  const handleBlur = (e) => {
-    setOpen(false);
-  }
-
   return (
-    <div className="mt-2" onMouseLeave={()=>handleBlur()}>
+    <div className="mt-2">
       <Collapse in={open}>
         <InputCard listPosition={listPosition} open={open} activeProjectNameListCardCollection={activeProjectNameListCardCollection} cardPosition={cardPosition} setOpen={setOpen}/>
       </Collapse>

@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Typography, InputBase } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
-function Title({ title }) {
+function Title({ listTitle, setListTitle, open, setOpen }) {
   
-  const [open, setOpen] = useState(false);
-  const [listTitle, setListTitle] = useState(title);
-
+  /* Update title input value */
   function updateInput(event) {
     setListTitle(event.target.value);
   }

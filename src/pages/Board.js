@@ -9,8 +9,7 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import InputList from '../components/InputList';
 import LoadingPage from './LoadingPage';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 
 function Board() {
@@ -23,7 +22,7 @@ function Board() {
   const [listPosition, setListPosition] = useState(0);
   const { projectID } = useParams();
   const history = useHistory()
-  const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position'));
+  const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'desc'));
   // eslint-disable-next-line
   const [_, loading] = useAuthState(auth);
 
@@ -139,6 +138,8 @@ function Board() {
     }
   }, [activeProjectName, state.user.email, projectID])
 
+  /* Update List Title */
+
   /* Update new List Position */
   useEffect(() => {
     async function calculateNewListPosition() {
@@ -149,24 +150,108 @@ function Board() {
     calculateNewListPosition()
   }, [state.user.email, projectID, lists])
 
+  /* Handle Drag End event */
+  const handleDrag = async (event) => {
+    const { destination, source, draggableId } = event;
+    // console.log('destination', destination)
+    // console.log('source', source)
+    // console.log('id', draggableId)
+    /* Update position of dragged element in same list */
+    if (destination) {
+      if (destination.droppableId === source.droppableId) {
+        if (destination.index === source.index) {
+          return
+        }
+        if (destination.index > source.index) {
+          /* Update when the element is dragged lower in the list */
+          await
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists').doc(source.droppableId)
+              .collection('tasks')
+              .where('position', '<=', destination.index)
+              .orderBy('position')
+              .get()
+              .then(async (docSnapshot) => {
+                for (const doc of docSnapshot.docs) {
+                  const pos = doc.data().position;
+                  if (pos > source.index && pos <= destination.index) {
+                    await 
+                      db.collection(state.user.email).doc(projectID)
+                      .collection('lists').doc(source.droppableId)
+                      .collection('tasks').doc(doc.id)
+                      .update({
+                        position: pos - 1
+                      }).then().catch(error => {
+                        console.error(error)
+                      })
+                  }
+                }
+                }).catch(error => {
+                  console.error(error)
+                })
+        } else {
+          /* Update when the element is dragged higher on the list */
+          /* Update pushed elements */
+          await
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists').doc(source.droppableId)
+              .collection('tasks')
+              .where('position', '>=', destination.index)
+              .orderBy('position')
+              .get()
+              .then(async (docSnapshot) => {
+                for (const doc of docSnapshot.docs) {
+                  const pos = doc.data().position;
+                  if (pos >= destination.index && pos < source.index) {
+                    await 
+                      db.collection(state.user.email).doc(projectID)
+                      .collection('lists').doc(source.droppableId)
+                      .collection('tasks').doc(doc.id)
+                      .update({
+                        position: pos + 1
+                      }).then().catch(error => {
+                        console.error(error)
+                      })
+                  }
+                }}).catch(error => {
+                  console.error(error)
+                })
+        }
+        /*  update dragged element */
+        await 
+          db.collection(state.user.email).doc(projectID)
+            .collection('lists').doc(source.droppableId)
+            .collection('tasks').doc(draggableId)
+            .update({
+              position: destination.index 
+            }).then()
+            .catch(error => {
+              console.error(error)
+            })
+      } else {
+        console.log('Destination is not the same')
+      }
+    }
+  }
+
   if (loading) {
     return <LoadingPage />
   }
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
+    <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
         {/* Header */}
         <BoardHeader history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
         {/* Lists */}
-        <div className="flex flex-grow">
-          {lists?.docs.map(doc => (
-            <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
-          ))}
-          <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
-        </div>
+          <div className="flex flex-grow">
+            <DragDropContext onDragEnd={(event)=>handleDrag(event)}>
+              {lists?.docs.map(doc => (
+                <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+              ))}
+            </DragDropContext>
+            <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
+          </div>
       </div>
-    </DndProvider>
   )
 }
 

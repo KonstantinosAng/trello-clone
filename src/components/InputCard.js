@@ -32,11 +32,15 @@ function InputCard({ activeProjectNameListCardCollection, setOpen, cardPosition,
     handleFocusInput()
   }, [open, listPosition])
 
+  const handleBlur = () => {
+    setOpen(false);
+  }
+
   return (
-    <div>
+    <div onMouseLeave={()=>handleBlur()}>
       <div className="">
         <Paper className="m-1 pb-4 shadow-lg">
-          <InputBase id={`input__card__root__${listPosition}`} onChange={handleChange} value={cardTitle} onBlur={()=>setOpen(false)} multiline fullWidth className="m-1 pb-2" placeholder="Enter a task"/>
+          <InputBase id={`input__card__root__${listPosition}`} onChange={handleChange} value={cardTitle} multiline fullWidth className="m-1 pb-2" placeholder="Enter a task"/>
         </Paper>
       </div>
       <div className="m-1 w-20 whitespace-nowrap">
