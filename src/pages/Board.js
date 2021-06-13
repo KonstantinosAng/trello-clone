@@ -241,7 +241,7 @@ function Board() {
   return (
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
         {/* Header */}
-        <BoardHeader history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
+        <BoardHeader projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
         {/* Lists */}
           <div className="flex flex-grow">
             <DragDropContext onDragEnd={(event)=>handleDrag(event)}>

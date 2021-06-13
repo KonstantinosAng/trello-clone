@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import PaletteIcon from '@material-ui/icons/Palette';
 import { useStateValue } from '../utils/StateProvider';
@@ -8,7 +8,7 @@ import { actionTypes } from '../utils/reducer';
 import { auth, provider } from '../utils/firebase';
 import Sidebar from './Sidebar';
 
-function BoardHeader({ setBackgroundColor, setPhotoUrl, name, setActiveProjectName, history }) {
+function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActiveProjectName, history }) {
   const [className, setClassName] = useState('hidden -right-full');
   const [changeTitle, setChangeTitle] = useState(false);
   const [showProfile, setShowProfile] = useState(false)
@@ -46,14 +46,20 @@ function BoardHeader({ setBackgroundColor, setPhotoUrl, name, setActiveProjectNa
     await auth.signInWithRedirect(provider);
   }
 
+  useEffect(() => {
+    if (changeTitle) {
+      document.getElementById(projectID)?.focus();
+    }
+  }, [changeTitle, projectID])
+
   return (
     <div className="px-5 py-4 text-left flex items-center">
-      <div className="flex flex-grow items-center text-black">
-        <ArrowBackIosIcon onClick={()=>history.push('/home')} className="text-4xl cursor-pointer hover:text-gray-500 mr-2"/>
+      <div className="flex flex-grow items-center text-white">
+        <ArrowBackIosIcon onClick={()=>history.push('/home')} className="text-4xl cursor-pointer hover:text-gray-300 mr-2"/>
         {changeTitle ? (
-          <InputBase fullWidth className="text-3xl cursor-pointer p-0" onBlur={()=>setChangeTitle(!changeTitle)} value={name} onChange={(e)=>updateProjectName(e)}/>
+          <InputBase id={projectID} fullWidth className="text-3xl cursor-pointer p-0 text-white" onBlur={()=>setChangeTitle(!changeTitle)} value={name} onChange={(e)=>updateProjectName(e)}/>
         ) : (
-          <h2 onClick={()=>setChangeTitle(!changeTitle)} className="text-3xl cursor-pointer"> {name} </h2>
+          <h2 onClick={()=>setChangeTitle(!changeTitle)} className="text-3xl cursor-pointer font-semibold hover:text-gray-300"> {name} </h2>
         )}
       </div>
       <div className="flex items-center justify-evenly">
