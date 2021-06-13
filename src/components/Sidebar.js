@@ -12,6 +12,7 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
   const [photos, setPhotos] = useState([]);
   const [searchingImages, setSearchingImages] = useState(false);
 
+  /* Pull default images on refresh */
   useEffect(() => {
     async function pullImages() {
       await fetch('https://api.pexels.com/v1/search?query=nature', {
@@ -26,33 +27,38 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
     pullImages()
   }, [])
 
+  /* Handle close Sidebar */
   const handleClose = () => {
     setClassName('hidden -right-full');
   }
-  
+
+  /* Handle show back carret */
   const handleShowCarret = () => {
     setShowCarret(false);
     setShowPhotos(false);
     setShowColors(false);
   }
-
+  /* Handle Show Color list */
   const handleColors = () => {
     setShowCarret(true);
     setShowPhotos(false);
     setShowColors(true);
   }
 
+  /* Handle Show Photo list */
   const handlePhotos = () => {
     setShowCarret(true);
     setShowPhotos(false);
     setShowPhotos(true);
   }
 
+  /* Handle background color */
   const handleBackgroundColor = (color) => {
     setBackgroundColor(color);
     setPhotoUrl('blank');
   }
 
+  /* Handle image show hover effect */
   const handleImageHover = (_id) => {
     document.getElementById(_id).classList.remove('hidden');
     document.getElementById(_id).classList.add('block');
@@ -60,6 +66,8 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
     document.getElementById(_id+'-overlay').classList.add('bg-opacity-10');
     
   }
+
+  /* Handle image remove hover effects */
   const handleImageMouseOut = (_id) => {
     document.getElementById(_id).classList.remove('block');
     document.getElementById(_id).classList.add('hidden');
@@ -67,11 +75,13 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
     document.getElementById(_id+'-overlay').classList.remove('bg-opacity-10');
   }
   
+  /* Handle background image */
   const handleBackgroudImage = (imageSrc) => {
     setPhotoUrl(imageSrc);
     setBackgroundColor('blank');
   }
 
+  /* handle search input and image search */
   const handleSearchInput = async (e) => {
     setSearchingImages(true);
     e.preventDefault();

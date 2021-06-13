@@ -18,6 +18,7 @@ function App() {
   // eslint-disable-next-line
   const [_, loading] = useAuthState(auth);
 
+  /* Track if user is logged in */
   useEffect(() => {
     const authorization = auth.onAuthStateChanged((Auth) => {
       if (Auth) {
@@ -34,6 +35,7 @@ function App() {
     return authorization;
   }, [dispatch, user])
 
+  /* If page loads */
   if (loading) {
     return (
       <LoadingPage />

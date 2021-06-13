@@ -8,8 +8,8 @@ function Project({ projectId, projectName }) {
   const [state, dispatch] = useStateValue();
   const history = useHistory();
 
+  /* Handle project clicked doc id and pass it on the query */
   const handleActiveProject = () => {
-
     dispatch({
       type: actionTypes.SET_ACTIVE_PROJECT,
       activeProject: projectId

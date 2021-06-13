@@ -10,6 +10,7 @@ function Error() {
   //eslint-disable-next-line
   const [_, loading] = useAuthState(auth);
   
+  /* Handle If user changed on project page authorization  */
   useEffect(() => {
     if (location.state.stateUser) {
       history.push('/home');

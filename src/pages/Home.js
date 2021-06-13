@@ -13,6 +13,7 @@ function Home() {
   const [state, dispatch] = useStateValue();
   const [projects] = useCollection(db.collection(state.user.email));
   
+  /* Handle user signOut */
   const signOut = () => {
     auth.signOut();
     dispatch({

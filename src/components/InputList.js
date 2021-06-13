@@ -30,6 +30,7 @@ function InputList({ activeProjectNameListsCollection, listPosition }) {
     handleFocusInput()
   }, [open])
   
+  /* Handle user blur focus and close input */
   const handleBlur = (e) => {
     setOpen(false);
   }

@@ -32,6 +32,7 @@ function InputCard({ activeProjectNameListCardCollection, setOpen, cardPosition,
     handleFocusInput()
   }, [open, listPosition])
 
+  /* Handle user blur and close input */
   const handleBlur = () => {
     setOpen(false);
   }

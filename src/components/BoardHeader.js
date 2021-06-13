@@ -41,6 +41,7 @@ function BoardHeader({ setBackgroundColor, setPhotoUrl, name, setActiveProjectNa
     setShowProfile(!showProfile);
   }
 
+  /* Handle user change log out/log in */
   const handleChangeUser = async () => {
     await auth.signInWithRedirect(provider);
   }
