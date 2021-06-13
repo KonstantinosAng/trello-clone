@@ -30,11 +30,13 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
   useEffect(() => {
     async function updateListTitle() {
       if (updateTitle) {
-        await activeProjectNameListsCollection.doc(listID).update({
-          title: listTitle
-        }).then().catch(error => {
-          console.error(error)
-        })
+        if (listTitle.trim() !== '') {
+          await activeProjectNameListsCollection.doc(listID).update({
+            title: listTitle.trim()
+          }).then().catch(error => {
+            console.error(error)
+          })
+        }
         setUpdateTitle(false);
       }
     }
@@ -51,7 +53,7 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {cards?.docs.map(doc => (
                 doc.data().taskTitle ? (
-                  <Card key={doc.id} id={doc.id} title={doc.data().taskTitle} position={doc.data().position} />
+                  <Card key={doc.id} id={doc.id} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
                 ) : (
                   <span></span>
                 )
