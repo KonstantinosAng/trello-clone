@@ -80,10 +80,10 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
                 )
               ))}
               {provided.placeholder}
+              <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
             </div>
           )}
         </Droppable>
-        <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
         {listMenu &&
           <div onClick={()=>handleListDeletion()} onMouseLeave={()=>setListMenu(false)} className="p-2 flex justify-center items-center font-semibold text-lg text-gray-800 bg-red-500 rounded-b-md cursor-pointer hover:bg-red-600">
             <DeleteIcon />
