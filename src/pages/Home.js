@@ -12,7 +12,7 @@ function Home() {
 
   const [state, dispatch] = useStateValue();
   const [projects] = useCollection(db.collection(state.user.email));
-
+  
   const signOut = () => {
     auth.signOut();
     dispatch({
@@ -29,7 +29,7 @@ function Home() {
       </div>
       <div className="flex flex-col justify-center items-center">
         <h2 className="font-bold text-2xl sm:text-4xl text-[#0079BF] px-5 py-2"> Projects </h2>
-        <div className="px-5 my-10 w-full flex flex-wrap justify-evenly place-items-left">
+        <div className="px-5 my-10 w-full flex flex-wrap items-center justify-center md:justify-start">
           {projects?.docs.map(doc => (
             <Project projectId={doc.id} key={doc.id} projectName={doc.data().projectName}/>
           ))}

@@ -9,7 +9,7 @@ import LoadingPage from './pages/LoadingPage';
 import Home from './pages/Home';
 import Board from './pages/Board';
 import NotFound from './pages/NotFound';
-import {Route, BrowserRouter as Router, Switch} from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Error from './pages/Error';
 
 
@@ -32,7 +32,7 @@ function App() {
       }
     })
     return authorization;
-  }, [dispatch])
+  }, [dispatch, user])
 
   if (loading) {
     return (

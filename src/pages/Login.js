@@ -7,10 +7,13 @@ import Logo from '../assets/logo.png';
 function Login() {
   // eslint-disable-next-line
   const [state, dispatch] = useStateValue();
+  
+  /* Sign in with google redirect */
   const signInRedirect = () => {
     auth.signInWithRedirect(provider);
   }
   
+  /* Sign in with google popup */
   // const signInPopUP = () => {
   //   auth.signInWithPopup(provider).then((result) => {
   //     dispatch({
@@ -22,6 +25,7 @@ function Login() {
   //   })
   // }
 
+  /* Get google redirect results */
   useEffect(() => {
     auth.getRedirectResult().then((result) => {
       if (result.credential) {

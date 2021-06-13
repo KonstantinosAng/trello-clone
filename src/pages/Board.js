@@ -4,10 +4,13 @@ import BoardHeader from '../components/BoardHeader';
 import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
 import { useParams, useHistory } from 'react-router-dom';
-import db from '../utils/firebase';
+import db, { auth } from '../utils/firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import InputList from '../components/InputList';
 import LoadingPage from './LoadingPage';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 
 function Board() {
@@ -18,16 +21,16 @@ function Board() {
   const [backgroundColor, setBackgroundColor] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const [listPosition, setListPosition] = useState(0);
-  const [loading, setLoading] = useState(false)
   const { projectID } = useParams();
   const history = useHistory()
   const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position'));
+  // eslint-disable-next-line
+  const [_, loading] = useAuthState(auth);
 
   /* Search for project in database */
   useEffect(() => {
     async function handleProjectId() {
       const params = new URLSearchParams()
-      setLoading(true);
       await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
         if (docSnapshot?.exists) {
           setActiveProjectName(docSnapshot.data().projectName);
@@ -39,14 +42,23 @@ function Board() {
             activeProject: projectID
           })
         } else {
-          params.append('=', 'project not found')
-          history.push(`/error/${params.toString()}`)
+          /* Monitor user changed */
+          let stateUser = false 
+          if (state.user) {
+            stateUser = true
+          }
+          params.append('q', 'project not found')
+          params.append('user', stateUser)
+          history.push({
+            pathname: '/error/400',
+            search: params.toString(),
+            state: { stateUser: stateUser }
+          })
         }
       }).catch(error => console.error(error))
     }
     handleProjectId()
-    setLoading(false);
-  }, [projectID, state.user.email, history, dispatch])
+  }, [projectID, state.user, history, dispatch])
 
   /* Pull color only on restart */
   useEffect(() => {
@@ -142,17 +154,19 @@ function Board() {
   }
 
   return (
-    <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
-      {/* Header */}
-      <BoardHeader history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
-      {/* Lists */}
-      <div className="flex flex-grow">
-        {lists?.docs.map(doc => (
-          <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
-        ))}
-        <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
+    <DndProvider backend={HTML5Backend}>
+      <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
+        {/* Header */}
+        <BoardHeader history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
+        {/* Lists */}
+        <div className="flex flex-grow">
+          {lists?.docs.map(doc => (
+            <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+          ))}
+          <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
+        </div>
       </div>
-    </div>
+    </DndProvider>
   )
 }
 
