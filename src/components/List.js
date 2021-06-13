@@ -5,7 +5,7 @@ import Card from './Card.js';
 import InputContainer from './InputContainer.js';
 import { useCollection } from 'react-firebase-hooks/firestore';
 
-function List({ listID, title, activeProjectNameListsCollection }) {
+function List({ listID, title, activeProjectNameListsCollection, listPosition }) {
 
   const [ cards ] = useCollection(activeProjectNameListsCollection?.doc(listID).collection('tasks').orderBy('position'));
   const [cardPosition, setCardPosition] = useState(0);
@@ -32,10 +32,7 @@ function List({ listID, title, activeProjectNameListsCollection }) {
             <span></span>
           )
         ))}
-        {/* <Card title='Make a trello clone'/>
-        <Card title='Make a trello clone'/>
-        <Card title='Make a trello clone'/> */}
-        <InputContainer cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
+        <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
       </Paper>
     </div>
   )

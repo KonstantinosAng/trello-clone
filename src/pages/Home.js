@@ -1,5 +1,5 @@
 import { Avatar, Button } from '@material-ui/core'
-import React from 'react'
+import React from 'react';
 import Project from '../components/Project';
 import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider'
@@ -33,7 +33,7 @@ function Home() {
           {projects?.docs.map(doc => (
             <Project projectId={doc.id} key={doc.id} projectName={doc.data().projectName}/>
           ))}
-          <InputProject/>
+          <InputProject />
         </div>
         </div>
     </div>

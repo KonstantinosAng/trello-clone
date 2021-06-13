@@ -1,10 +1,10 @@
 import { Button, IconButton, InputBase, Paper, Collapse } from '@material-ui/core'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ClearIcon from '@material-ui/icons/Clear';
 import db from '../utils/firebase';
 import { useStateValue } from '../utils/StateProvider'
 
-function InputCard() {
+function InputProject() {
   const [cardTitle, setCardTitle] = useState('');
   const [open, setOpen] = useState(false);
   const [invalidInput, setInvalidInput] = useState(false);
@@ -19,7 +19,7 @@ function InputCard() {
   /* Create project */
   async function handleNewProject() {
     
-    if (cardTitle === "") {
+    if (cardTitle.trim() === "") {
       setInvalidInput(true);
       return
     } else {
@@ -28,7 +28,7 @@ function InputCard() {
 
     /* Create project with default values */
     await db.collection(state.user.email).add({
-      projectName: cardTitle,
+      projectName: cardTitle.trim(),
       backgroundColor: 'bg-indigo-500',
       backgroundImage: 'blank'
     }).then().catch(err => {
@@ -41,9 +41,19 @@ function InputCard() {
 
   /* Hide project input */
   function handleClearIcon() {
-    setCardTitle('');
     setOpen(false);
+    setCardTitle('');
   }
+
+  /* Handle Project Input focus */
+  useEffect(() => {
+    function handleFocusInput() {
+      if (open) {
+        document.getElementById('input__project__root').focus();
+      }
+    }
+    handleFocusInput()
+  }, [open])
 
   return (
     <>
@@ -70,11 +80,11 @@ function InputCard() {
           </Collapse>
         </div>  
       ) : (
-        <div className="bg-gray-300 rounded-lg hover:bg-gray-300 m-5 px-5 py-16 w-full xs:max-w-xs flex flex-col flex-grow justify-center place-items-center">
+        <div onMouseLeave={()=>setOpen(false)} className="bg-gray-300 rounded-lg hover:bg-gray-300 m-5 px-5 py-16 w-full xs:max-w-xs flex flex-col flex-grow justify-center place-items-center">
           <Collapse in={open}>
             <div className="">
               <Paper className="m-1 pb-4 shadow-xl">
-                <InputBase onChange={handleChange} value={cardTitle} multiline fullWidth className="m-1 pb-2" placeholder="Enter a project name"/>
+                <InputBase id="input__project__root" onChange={handleChange} value={cardTitle} multiline fullWidth className="m-1 pb-2" placeholder="Enter a project name"/>
               </Paper>
             </div>
             <div className="m-1 w-20 whitespace-nowrap">
@@ -96,4 +106,4 @@ function InputCard() {
     )
 }
 
-export default InputCard
+export default InputProject

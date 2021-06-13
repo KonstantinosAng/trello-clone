@@ -1,6 +1,6 @@
 # Trello clone
 
-A [trello clone](https://trello.com) app using ReactJS, TailwindCSS and Material UI Icons for the frontend, Firebase for authorization, authentication and storing and Pexels for the image data.
+A [trello clone](https://trello.com) app using ReactJS, React Context API, React DnD, TailwindCSS and Material UI Icons for the frontend, Firebase for authorization, authentication and storing and Pexels for the image data.
 
 ## Usage
 

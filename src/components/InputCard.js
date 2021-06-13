@@ -1,19 +1,19 @@
 import { Button, IconButton, InputBase, Paper } from '@material-ui/core'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ClearIcon from '@material-ui/icons/Clear';
 
-function InputCard({ activeProjectNameListCardCollection, setOpen, cardPosition }) {
+function InputCard({ activeProjectNameListCardCollection, setOpen, cardPosition, open, listPosition }) {
   const [cardTitle, setCardTitle] = useState('');
-
   const handleChange = (e) => {
     setCardTitle(e.target.value);
   }
 
+  /* Create new card */
   async function handleNewCard() {
     if (cardTitle.trim() !== '') {
       await activeProjectNameListCardCollection.add({
         position: cardPosition,
-        taskTitle: cardTitle
+        taskTitle: cardTitle.trim()
       }).then().catch(error => {
         console.error(error);
       })
@@ -21,12 +21,22 @@ function InputCard({ activeProjectNameListCardCollection, setOpen, cardPosition 
       setCardTitle('');
     }
   }
+  
+  /* Handle Project Input focus */
+  useEffect(() => {
+    function handleFocusInput() {
+      if (open) {
+        document.getElementById(`input__card__root__${listPosition}`).focus();
+      }
+    }
+    handleFocusInput()
+  }, [open, listPosition])
 
   return (
     <div>
       <div className="">
         <Paper className="m-1 pb-4 shadow-lg">
-          <InputBase onChange={handleChange} value={cardTitle} onBlur={()=>setOpen(false)} multiline fullWidth className="m-1 pb-2" placeholder="Enter a task"/>
+          <InputBase id={`input__card__root__${listPosition}`} onChange={handleChange} value={cardTitle} onBlur={()=>setOpen(false)} multiline fullWidth className="m-1 pb-2" placeholder="Enter a task"/>
         </Paper>
       </div>
       <div className="m-1 w-20 whitespace-nowrap">

@@ -7,6 +7,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import db from '../utils/firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import InputList from '../components/InputList';
+import LoadingPage from './LoadingPage';
 
 
 function Board() {
@@ -17,6 +18,7 @@ function Board() {
   const [backgroundColor, setBackgroundColor] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const [listPosition, setListPosition] = useState(0);
+  const [loading, setLoading] = useState(false)
   const { projectID } = useParams();
   const history = useHistory()
   const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position'));
@@ -25,6 +27,7 @@ function Board() {
   useEffect(() => {
     async function handleProjectId() {
       const params = new URLSearchParams()
+      setLoading(true);
       await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
         if (docSnapshot?.exists) {
           setActiveProjectName(docSnapshot.data().projectName);
@@ -42,16 +45,19 @@ function Board() {
       }).catch(error => console.error(error))
     }
     handleProjectId()
+    setLoading(false);
   }, [projectID, state.user.email, history, dispatch])
 
   /* Pull color only on restart */
   useEffect(() => {
     async function pullBackgroundColor() {
       await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
-        if (docSnapshot?.data().backgroundColor !== 'blank') {
-          setBackgroundColor(docSnapshot.data().backgroundColor);
+        if (docSnapshot?.exists) {
+          if (docSnapshot.data().backgroundColor !== 'blank') {
+            setBackgroundColor(docSnapshot.data().backgroundColor);
+          }
         }
-      })
+      }).catch(error => console.error(error))
     }
     pullBackgroundColor()
   }, [state.user.email, projectID])
@@ -72,8 +78,10 @@ function Board() {
   useEffect(() => {
     async function pullBackgroundImage() {
       await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
-        if (docSnapshot?.data().backgroundImage !== 'blank') {
-          setPhotoUrl(docSnapshot.data().backgroundImage);
+        if (docSnapshot?.exists) {
+          if (docSnapshot?.data().backgroundImage !== 'blank') {
+            setPhotoUrl(docSnapshot.data().backgroundImage);
+          }
         }
       })
     }
@@ -123,21 +131,24 @@ function Board() {
   useEffect(() => {
     async function calculateNewListPosition() {
       await db.collection(state.user.email).doc(projectID).collection('lists').get().then(docSnapshot => {
-        console.log(docSnapshot.docs.length)
         setListPosition(docSnapshot.docs.length);
       })
     }
     calculateNewListPosition()
   }, [state.user.email, projectID, lists])
 
+  if (loading) {
+    return <LoadingPage />
+  }
+
   return (
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
       {/* Header */}
-      <BoardHeader setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
+      <BoardHeader history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
       {/* Lists */}
       <div className="flex flex-grow">
         {lists?.docs.map(doc => (
-          <List listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+          <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
         ))}
         <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
       </div>
