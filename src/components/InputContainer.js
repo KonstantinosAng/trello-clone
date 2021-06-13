@@ -6,7 +6,7 @@ function InputContainer({ activeProjectNameListCardCollection, inputName, cardPo
   const [open, setOpen] = useState(false);
   
   return (
-    <div className="mt-2">
+    <div className="mt-2 rounded-md shadow-inner">
       <Collapse in={open}>
         <InputCard listPosition={listPosition} open={open} activeProjectNameListCardCollection={activeProjectNameListCardCollection} cardPosition={cardPosition} setOpen={setOpen}/>
       </Collapse>

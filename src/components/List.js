@@ -85,7 +85,7 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
           )}
         </Droppable>
         {listMenu &&
-          <div onClick={()=>handleListDeletion()} onMouseLeave={()=>setListMenu(false)} className="p-2 flex justify-center items-center font-semibold text-lg text-gray-800 bg-red-500 rounded-b-md cursor-pointer hover:bg-red-600">
+          <div onClick={()=>handleListDeletion()} onMouseLeave={()=>setListMenu(false)} className="p-2 flex justify-center items-center font-semibold text-lg text-gray-800 bg-red-500 rounded-b-md shadow-inner cursor-pointer hover:bg-red-600">
             <DeleteIcon />
           </div>
         }
