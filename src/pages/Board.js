@@ -22,7 +22,7 @@ function Board() {
   const [listPosition, setListPosition] = useState(0);
   const { projectID } = useParams();
   const history = useHistory()
-  const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'desc'));
+  const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'asc'));
   // eslint-disable-next-line
   const [_, loading] = useAuthState(auth);
 
