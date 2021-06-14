@@ -22,7 +22,7 @@ function Home() {
   }
 
   return (
-    <div className="bg-[#111E2F] w-screen h-screen flex flex-col overflow-y-scroll">
+    <div className="bg-[#111E2F] w-screen h-screen flex flex-col overflow-y-auto">
       <div className="flex flex-wrap items-center text-center justify-evenly xs:justify-end p-5">
         <h2 className="xs:mr-5 text-center self-center font-medium text-sm xs:text-lg text-blue-200"> {state?.user?.displayName} </h2>
         <Avatar className="xs:mr-5 object-contain cursor-pointer" src={state?.user?.photoURL}/>
