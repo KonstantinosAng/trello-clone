@@ -9,7 +9,7 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import InputList from '../components/InputList';
 import LoadingPage from './LoadingPage';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 
 function Board() {
@@ -152,28 +152,107 @@ function Board() {
 
   /* Handle Drag End event */
   const handleDrag = async (event) => {
-    const { destination, source, draggableId } = event;
+    const { destination, source, draggableId, type } = event;
     /* Update position of dragged element in same list */
     if (destination) {
-      if (destination.droppableId === source.droppableId) {
-        if (destination.index === source.index) {
-          return
-        }
-        if (destination.index > source.index) {
-          /* Update when the element is dragged lower in the list */
+      /* Handle card drag drop */
+      if (type === 'card') {
+        if (destination.droppableId === source.droppableId) {
+          if (destination.index === source.index) {
+            return
+          }
+          if (destination.index > source.index) {
+            /* Update when the element is dragged lower in the list */
+            await
+              db.collection(state.user.email).doc(projectID)
+                .collection('lists').doc(source.droppableId)
+                .collection('tasks')
+                .where('position', '<=', destination.index)
+                .orderBy('position')
+                .get()
+                .then(async (docSnapshot) => {
+                  for (const doc of docSnapshot.docs) {
+                    const pos = doc.data().position;
+                    if (pos > source.index && pos <= destination.index) {
+                      await 
+                        db.collection(state.user.email).doc(projectID)
+                        .collection('lists').doc(source.droppableId)
+                        .collection('tasks').doc(doc.id)
+                        .update({
+                          position: pos - 1
+                        }).then().catch(error => {
+                          console.error(error)
+                        })
+                    }
+                  }
+                  }).catch(error => {
+                    console.error(error)
+                  })
+          } else {
+            /* Update when the element is dragged higher on the list */
+            /* Update pushed elements */
+            await
+              db.collection(state.user.email).doc(projectID)
+                .collection('lists').doc(source.droppableId)
+                .collection('tasks')
+                .where('position', '>=', destination.index)
+                .orderBy('position')
+                .get()
+                .then(async (docSnapshot) => {
+                  for (const doc of docSnapshot.docs) {
+                    const pos = doc.data().position;
+                    if (pos >= destination.index && pos < source.index) {
+                      await 
+                        db.collection(state.user.email).doc(projectID)
+                          .collection('lists').doc(source.droppableId)
+                          .collection('tasks').doc(doc.id)
+                          .update({
+                            position: pos + 1
+                          }).then().catch(error => {
+                            console.error(error)
+                          })
+                    }
+                  }
+                }).catch(error => {
+                  console.error(error)
+                })
+          }
+          /*  update dragged element */
+          await 
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists').doc(source.droppableId)
+              .collection('tasks').doc(draggableId)
+              .update({
+                position: destination.index 
+              }).then()
+              .catch(error => {
+                console.error(error)
+              })
+        } else {
+          /* Handle different list drop */
+          /* Store dragged card data */
+          let draggedTitle;
           await
+            db.collection(state.user.email).doc(projectID)
+            .collection('lists').doc(source.droppableId)
+            .collection('tasks').doc(draggableId)
+            .get()
+            .then(docSnapshot => {
+              draggedTitle = docSnapshot.data().taskTitle;
+            })
+          /* Update position on the source list */
+          await 
             db.collection(state.user.email).doc(projectID)
               .collection('lists').doc(source.droppableId)
               .collection('tasks')
-              .where('position', '<=', destination.index)
+              .where('position', '>', source.index)
               .orderBy('position')
               .get()
               .then(async (docSnapshot) => {
                 for (const doc of docSnapshot.docs) {
                   const pos = doc.data().position;
-                  if (pos > source.index && pos <= destination.index) {
-                    await 
-                      db.collection(state.user.email).doc(projectID)
+                  await 
+                    db.collection(state.user.email).doc(projectID)
                       .collection('lists').doc(source.droppableId)
                       .collection('tasks').doc(doc.id)
                       .update({
@@ -181,130 +260,55 @@ function Board() {
                       }).then().catch(error => {
                         console.error(error)
                       })
-                  }
                 }
-                }).catch(error => {
-                  console.error(error)
-                })
-        } else {
-          /* Update when the element is dragged higher on the list */
-          /* Update pushed elements */
+              }).catch(error => {
+                console.error(error);
+              })
+          /* Update position on the destination list */
           await
             db.collection(state.user.email).doc(projectID)
-              .collection('lists').doc(source.droppableId)
+              .collection('lists').doc(destination.droppableId)
               .collection('tasks')
               .where('position', '>=', destination.index)
               .orderBy('position')
               .get()
-              .then(async (docSnapshot) => {
+              .then( async (docSnapshot) => {
                 for (const doc of docSnapshot.docs) {
                   const pos = doc.data().position;
-                  if (pos >= destination.index && pos < source.index) {
-                    await 
-                      db.collection(state.user.email).doc(projectID)
-                        .collection('lists').doc(source.droppableId)
-                        .collection('tasks').doc(doc.id)
-                        .update({
-                          position: pos + 1
-                        }).then().catch(error => {
-                          console.error(error)
-                        })
-                  }
+                  await 
+                    db.collection(state.user.email).doc(projectID)
+                      .collection('lists').doc(destination.droppableId)
+                      .collection('tasks').doc(doc.id)
+                      .update({
+                        position: pos + 1
+                      }).then().catch(error => {
+                        console.error(error)
+                      })
                 }
               }).catch(error => {
-                console.error(error)
+                console.error(error);
+              })
+          /* Add card to destination list */
+          await
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists').doc(destination.droppableId)
+              .collection('tasks').add({
+                    position: destination.index,
+                    taskTitle: draggedTitle
+              }).then().catch(error => {
+                console.error(error);
+              })
+          /* Remove card from source list */
+          await
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists').doc(source.droppableId)
+              .collection('tasks').doc(draggableId).delete()
+              .then().catch(error => {
+                console.error(error);
               })
         }
-        /*  update dragged element */
-        await 
-          db.collection(state.user.email).doc(projectID)
-            .collection('lists').doc(source.droppableId)
-            .collection('tasks').doc(draggableId)
-            .update({
-              position: destination.index 
-            }).then()
-            .catch(error => {
-              console.error(error)
-            })
       } else {
-        /* Handle different list drop */
-        /* Store dragged card data */
-        let draggedTitle;
-        await
-          db.collection(state.user.email).doc(projectID)
-          .collection('lists').doc(source.droppableId)
-          .collection('tasks').doc(draggableId)
-          .get()
-          .then(docSnapshot => {
-            draggedTitle = docSnapshot.data().taskTitle;
-          })
-        /* Update position on the source list */
-        await 
-          db.collection(state.user.email).doc(projectID)
-            .collection('lists').doc(source.droppableId)
-            .collection('tasks')
-            .where('position', '>', source.index)
-            .orderBy('position')
-            .get()
-            .then(async (docSnapshot) => {
-              for (const doc of docSnapshot.docs) {
-                const pos = doc.data().position;
-                await 
-                  db.collection(state.user.email).doc(projectID)
-                    .collection('lists').doc(source.droppableId)
-                    .collection('tasks').doc(doc.id)
-                    .update({
-                      position: pos - 1
-                    }).then().catch(error => {
-                      console.error(error)
-                    })
-              }
-            }).catch(error => {
-              console.error(error);
-            })
-        /* Update position on the destination list */
-        await
-          db.collection(state.user.email).doc(projectID)
-            .collection('lists').doc(destination.droppableId)
-            .collection('tasks')
-            .where('position', '>=', destination.index)
-            .orderBy('position')
-            .get()
-            .then( async (docSnapshot) => {
-              for (const doc of docSnapshot.docs) {
-                const pos = doc.data().position;
-                await 
-                  db.collection(state.user.email).doc(projectID)
-                    .collection('lists').doc(destination.droppableId)
-                    .collection('tasks').doc(doc.id)
-                    .update({
-                      position: pos + 1
-                    }).then().catch(error => {
-                      console.error(error)
-                    })
-              }
-            }).catch(error => {
-              console.error(error);
-            })
-        /* Add card to destination list */
-        await
-          db.collection(state.user.email).doc(projectID)
-            .collection('lists').doc(destination.droppableId)
-            .collection('tasks').add({
-                  position: destination.index,
-                  taskTitle: draggedTitle
-            }).then().catch(error => {
-              console.error(error);
-            })
-        /* Remove card from source list */
-        await
-          db.collection(state.user.email).doc(projectID)
-            .collection('lists').doc(source.droppableId)
-            .collection('tasks').doc(draggableId).delete()
-            .then().catch(error => {
-              console.error(error);
-            })
-
+        /* Handle List Drag drop */
       }
     }
   }
@@ -320,9 +324,16 @@ function Board() {
         {/* Lists */}
           <div className="flex flex-grow">
             <DragDropContext onDragEnd={(event)=>handleDrag(event)}>
-              {lists?.docs.map(doc => (
-                <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
-              ))}
+              <Droppable droppableId="list__drop_zone" type="list" direction="horizontal">
+                {(provided)=>(
+                  <div ref={provided.innerRef} {...provided.droppableProps} className="flex">
+                    {lists?.docs.map(doc => (
+                      <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
             </DragDropContext>
             <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
           </div>

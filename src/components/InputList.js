@@ -42,7 +42,7 @@ function InputList({ activeProjectNameListsCollection, listPosition }) {
   }
 
   return (
-    <div className="ml-4" ttabIndex={-1} onMouseLeave={()=>handleBlur()}>
+    <div className="ml-4" tabIndex={-1} onMouseLeave={()=>handleBlur()}>
       <Collapse in={open}>
         <div className="">
           <Paper className="m-1 pb-4 shadow-2xl">

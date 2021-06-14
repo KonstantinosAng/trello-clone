@@ -5,7 +5,7 @@ import Title from './Title.js';
 import Card from './Card.js';
 import InputContainer from './InputContainer.js';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 function List({ listID, title, activeProjectNameListsCollection, listPosition }) {
 
@@ -65,32 +65,37 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
   }
 
   return (
-    <div>
-      <Paper className="w-80 bg-[#EBECF0] ml-5 flex flex-col flex-grow shadow-2xl rounded-md">
-        <CssBaseline />
-        <Title id={listID} listMenu={listMenu} setListMenu={setListMenu} listTitle={listTitle} setListTitle={setListTitle} open={open} setOpen={setOpen} setUpdateTitle={setUpdateTitle}/>
-        <Droppable droppableId={listID}>
-          {(provided)=>(
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {cards?.docs.map(doc => (
-                doc.data().taskTitle ? (
-                  <Card key={doc.id} id={doc.id} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
-                ) : (
-                  <span></span>
-                )
-              ))}
-              {provided.placeholder}
-              <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
-            </div>
-          )}
-        </Droppable>
-        {listMenu &&
-          <div onClick={()=>handleListDeletion()} onMouseLeave={()=>setListMenu(false)} className="p-2 flex justify-center items-center font-semibold text-lg text-gray-800 bg-red-500 rounded-b-md shadow-inner cursor-pointer hover:bg-red-600">
-            <DeleteIcon />
-          </div>
-        }
-      </Paper>
-    </div>
+    <Draggable index={listPosition} draggableId={listID}>
+      {(provided)=>(
+        <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+          <Paper className="w-80 bg-[#EBECF0] ml-5 flex flex-col flex-grow shadow-2xl rounded-md">
+            <CssBaseline />
+            <Title id={listID} listMenu={listMenu} setListMenu={setListMenu} listTitle={listTitle} setListTitle={setListTitle} open={open} setOpen={setOpen} setUpdateTitle={setUpdateTitle}/>
+            <Droppable droppableId={listID} type="card">
+              {(provided)=>(
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {cards?.docs.map(doc => (
+                    doc.data().taskTitle ? (
+                      <Card key={doc.id} id={doc.id} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
+                    ) : (
+                      <span></span>
+                    )
+                  ))}
+                  {provided.placeholder}
+                  <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
+                </div>
+              )}
+            </Droppable>
+            {listMenu &&
+              <div onClick={()=>handleListDeletion()} onMouseLeave={()=>setListMenu(false)} className="p-2 flex justify-center items-center font-semibold text-lg text-gray-800 bg-red-500 rounded-b-md shadow-inner cursor-pointer hover:bg-red-600">
+                <DeleteIcon />
+              </div>
+            }
+          </Paper>
+        </div>
+
+      )}
+    </Draggable>
   )
 }
 

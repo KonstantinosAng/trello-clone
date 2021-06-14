@@ -73,7 +73,7 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
       <div className="flex items-center justify-evenly">
         <div className="relative flex flex-col">
           <Avatar onClick={()=>handleProfileShow()} className="mx-2 object-contain shadow-xl cursor-pointer" src={state?.user?.photoURL} />
-          <div id="board__header__root__profile__menu" tabindex={-1} onBlur={()=>handleProfileShow()} className={`${showProfile ? 'flex' : 'hidden' } flex-col justify-center items-center absolute bottom-[-4.5rem] left-[-3.2rem] bg-gray-400 w-40 rounded-xl shadow-xl focus:outline-none active:outline-none`}>
+          <div id="board__header__root__profile__menu" tabIndex={-1} onBlur={()=>handleProfileShow()} className={`${showProfile ? 'flex' : 'hidden' } flex-col justify-center items-center absolute bottom-[-4.5rem] left-[-3.2rem] bg-gray-400 w-40 rounded-xl shadow-xl focus:outline-none active:outline-none`}>
             <ArrowDropUpIcon className="w-full text-white"/>
             <Button onClick={()=>handleChangeUser()} className="w-full cursor-pointer text-white text-md font-semibold active:outline-none focus:outline-none hover:text-gray-100"> Change User </Button>
           </div>

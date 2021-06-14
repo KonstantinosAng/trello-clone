@@ -3,6 +3,7 @@ import { Paper, IconButton, InputBase } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { Draggable } from 'react-beautiful-dnd';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 
 function Card({ title, id, position, activeProjectNameListCardCollection }) {
   const [showInput, setShowInput] = useState(false);
@@ -49,7 +50,7 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
             activeProjectNameListCardCollection.doc(doc.id).update({
               position: doc.data().position - 1
             }).then().catch(error => {
-              console.error(error)
+              console.error(error);
             })
         }
       })
@@ -59,8 +60,8 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
   return (
     <Draggable draggableId={id} index={position}>
       {(provided) => (
-        <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps} className="shadow-lg cursor-pointer">
-          <Paper onMouseLeave={()=>setCardMenu(false)} className="pl-3 m-1 border-[1px] border-gray-300 hover:bg-gray-300 rounded-md flex items-center">
+        <div ref={provided.innerRef} {...provided.draggableProps} className="shadow-lg cursor-pointer">
+          <Paper {...provided.dragHandleProps} onMouseLeave={()=>setCardMenu(false)} className="pl-3 m-1 border-[1px] border-gray-300 hover:bg-gray-300 rounded-md flex items-center">
             {showInput 
               ? 
               <InputBase id={id} className="flex-grow" value={inputValue} onChange={(e)=>setInputValue(e.target.value)} onBlur={()=>handleBlurInput()} />
@@ -71,7 +72,10 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
               <EditIcon />
             </IconButton>
             {cardMenu && (
+              <>
+              <AddIcon />
               <DeleteIcon onClick={()=>handleDeleteCard()} className="w-10 h-full bg-red-500 rounded-r-md p-[0.4rem] text-gray-800 focus:outline-none hover:bg-red-600 shadow-inner" />
+              </>
             )}
           </Paper>
         </div>
