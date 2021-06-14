@@ -80,7 +80,7 @@ function InputProject() {
           </Collapse>
         </div>  
       ) : (
-        <div onMouseLeave={()=>setOpen(false)} className="bg-gray-300 rounded-lg hover:bg-gray-300 m-5 px-5 py-16 w-full xs:max-w-xs flex flex-col flex-grow justify-center place-items-center">
+        <div tabIndex={-1} onMouseLeave={()=>setOpen(false)} className="bg-gray-300 rounded-lg hover:bg-gray-300 m-5 p-[1.3rem] w-full xs:max-w-xs flex flex-col flex-grow justify-center place-items-center">
           <Collapse in={open}>
             <div className="">
               <Paper className="m-1 pb-4 shadow-xl">

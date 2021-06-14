@@ -35,8 +35,14 @@ function InputList({ activeProjectNameListsCollection, listPosition }) {
     setOpen(false);
   }
 
+  /* Handle Clear Icon */
+  const handleClearIcon = () => {
+    setOpen(!open);
+    setListTitle('');
+  }
+
   return (
-    <div className="ml-4" onMouseLeave={()=>handleBlur()}>
+    <div className="ml-4" ttabIndex={-1} onMouseLeave={()=>handleBlur()}>
       <Collapse in={open}>
         <div className="">
           <Paper className="m-1 pb-4 shadow-2xl">
@@ -45,7 +51,7 @@ function InputList({ activeProjectNameListsCollection, listPosition }) {
         </div>
         <div className="m-1 w-20 whitespace-nowrap">
           <Button onClick={()=>handleNewList()} className="bg-green-500 text-white font-semibold shadow-xl focus:outline-none hover:bg-green-400"> Add List </Button>
-          <IconButton onClick={()=> setOpen(!open)} className="ml-2 focus:outline-none shadow-sm">
+          <IconButton onClick={()=>handleClearIcon()} className="ml-2 focus:outline-none shadow-sm">
             <ClearIcon className="focus:outline-none"/>
           </IconButton>
         </div>

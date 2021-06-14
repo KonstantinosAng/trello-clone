@@ -96,8 +96,15 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
     setSearchingImages(false);
   }
 
+  /* Handle focus on sidebar when open */
+  useEffect(() => {
+    if (className === 'flex right-0') {
+      document.getElementById('board__header__root__sidebar').focus();
+    }
+  }, [className])
+  
   return (
-    <div className={`absolute top-0 w-[20.7rem] bg-gray-200 h-screen overflow-y-scroll overflow-x-hidden ${className}`}>
+    <div id="board__header__root__sidebar" onMouseLeave={()=>handleClose()} tabIndex={-1} className={`absolute top-0 w-[20.7rem] bg-gray-200 h-screen overflow-y-scroll overflow-x-hidden ${className} active:outline-none focus:outline-none`}>
       <div className="flex flex-col ml-2">
         <div className="flex justify-evenly w-full items-center h-14 border-b-2 border-gray-300">
           <ArrowBackIosIcon onClick={()=>handleShowCarret()} className={`cursor-pointer ${showCarret ? "flex" : "hidden"}`}/>
