@@ -55,11 +55,11 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
   return (
     <div className="px-5 py-4 text-left flex items-center">
       <div className="flex flex-grow items-center text-white">
-        <ArrowBackIosIcon onClick={()=>history.push('/home')} className="text-4xl cursor-pointer hover:text-gray-300 mr-2"/>
+        <ArrowBackIosIcon onClick={()=>history.push('/home')} className="text-4xl cursor-pointer hover:text-gray-100 mr-2"/>
         {changeTitle ? (
           <InputBase id={projectID} fullWidth className="text-3xl cursor-pointer p-0 text-white" onBlur={()=>setChangeTitle(!changeTitle)} value={name} onChange={(e)=>updateProjectName(e)}/>
         ) : (
-          <h2 onClick={()=>setChangeTitle(!changeTitle)} className="text-3xl cursor-pointer font-semibold hover:text-gray-300"> {name} </h2>
+          <h2 onClick={()=>setChangeTitle(!changeTitle)} className="text-3xl cursor-pointer font-semibold rounded-lg p-2 bg-white bg-opacity-20 shadow-md hover:bg-opacity-30 hover:text-gray-100"> {name} </h2>
         )}
       </div>
       <div className="flex items-center justify-evenly">
