@@ -21,7 +21,7 @@ REACT_APP_FIREBASE_MEASUREMENT_ID=
 For the image data you will need an API key from pexels.
 
 ```javascript
- - REACT_APP_PEXELS_API_KEY
+REACT_APP_PEXELS_API_KEY=
 ```
 
 ## Usage
