@@ -32,7 +32,7 @@ function Home() {
         <h2 className="font-bold text-2xl sm:text-4xl text-[#0079BF] px-5 py-2"> Projects </h2>
         <div className="px-5 my-10 w-full flex flex-wrap items-center justify-center md:justify-start">
           {projects?.docs.map(doc => (
-            <Project projectId={doc.id} key={doc.id} projectName={doc.data().projectName}/>
+            <Project projectBackgroundColor={doc.data().backgroundColor} projectBackgroundImage={doc.data().backgroundImage} projectId={doc.id} key={doc.id} projectName={doc.data().projectName}/>
           ))}
           <InputProject />
         </div>
