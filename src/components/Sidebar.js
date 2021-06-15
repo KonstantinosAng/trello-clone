@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import ClearIcon from '@material-ui/icons/Clear';
 import SearchIcon from '@material-ui/icons/Search';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Spinner from '../assets/spinner.gif';
+import LoadingElement from './LoadingElement';
+const BackgroundPhoto = React.lazy(() => import('./BackgroundPhoto.js'));
+const BackgroundColor = React.lazy(() => import('./BackgroundColor.js'));
 
 function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
   
@@ -58,23 +61,6 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
     setPhotoUrl('blank');
   }
 
-  /* Handle image show hover effect */
-  const handleImageHover = (_id) => {
-    document.getElementById(_id).classList.remove('hidden');
-    document.getElementById(_id).classList.add('block');
-    document.getElementById(_id+'-overlay').classList.add('bg-gray-100');
-    document.getElementById(_id+'-overlay').classList.add('bg-opacity-10');
-    
-  }
-
-  /* Handle image remove hover effects */
-  const handleImageMouseOut = (_id) => {
-    document.getElementById(_id).classList.remove('block');
-    document.getElementById(_id).classList.add('hidden');
-    document.getElementById(_id+'-overlay').classList.remove('bg-gray-100');
-    document.getElementById(_id+'-overlay').classList.remove('bg-opacity-10');
-  }
-  
   /* Handle background image */
   const handleBackgroudImage = (imageSrc) => {
     setPhotoUrl(imageSrc);
@@ -120,14 +106,16 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
           </div>
         </div>
         <div className={`${showColors ? 'flex' : 'hidden'} w-full flex-wrap justify-between text-center`}>
-          <h2 onClick={()=>handleBackgroundColor('bg-red-700')} className="bg-red-700 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Red </h2>
-          <h2 onClick={()=>handleBackgroundColor('bg-green-500')} className="bg-green-500 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Green </h2>
-          <h2 onClick={()=>handleBackgroundColor('bg-blue-500')} className="bg-blue-500 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Blue </h2>
-          <h2 onClick={()=>handleBackgroundColor('bg-gray-500')} className="bg-gray-500 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Gray </h2>
-          <h2 onClick={()=>handleBackgroundColor('bg-yellow-500')} className="bg-yellow-500 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Yellow </h2>
-          <h2 onClick={()=>handleBackgroundColor('bg-indigo-500')} className="bg-indigo-500 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Indigo </h2>
-          <h2 onClick={()=>handleBackgroundColor('bg-purple-500')} className="bg-purple-500 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Purple </h2>
-          <h2 onClick={()=>handleBackgroundColor('bg-pink-500')} className="bg-pink-500 w-36 text-xl text-white my-2 px-2 py-10 rounded-xl cursor-pointer active:animate-bounce shadow-xl"> Pink </h2>
+          <Suspense fallback={<LoadingElement/>}>
+            <BackgroundColor name={'Red'} handleBackgroundColor={handleBackgroundColor} color='bg-red-500'/>
+            <BackgroundColor name={'Green'} handleBackgroundColor={handleBackgroundColor} color='bg-green-500'/>
+            <BackgroundColor name={'Blue'} handleBackgroundColor={handleBackgroundColor} color='bg-blue-500'/>
+            <BackgroundColor name={'Gray'} handleBackgroundColor={handleBackgroundColor} color='bg-gray-500'/>
+            <BackgroundColor name={'Yellow'} handleBackgroundColor={handleBackgroundColor} color='bg-yellow-500'/>
+            <BackgroundColor name={'Indigo'} handleBackgroundColor={handleBackgroundColor} color='bg-indigo-500'/>
+            <BackgroundColor name={'Purple'} handleBackgroundColor={handleBackgroundColor} color='bg-purple-500'/>
+            <BackgroundColor name={'Pink'} handleBackgroundColor={handleBackgroundColor} color='bg-pink-500'/>
+          </Suspense>
         </div>
         <div className={`${showPhotos ? 'flex' : 'hidden'} flex-col flex-wrap w-full justify-between text-center`}>
           <h2 onClick={()=>window.open('https://www.pexels.com', '_blank')} className="text-xl text-[#0079BF] py-2 cursor-pointer underline"> Photos by pexel </h2>
@@ -138,16 +126,14 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
           <div className="flex flex-wrap justify-between items-center text-center w-full my-2">
             {searchingImages ? (
               <div className="flex items-center w-full justify-center mt-5">
-                <img loading="lazy" className="object-contain w-20" src={Spinner} alt="Loading..."/>
+                <img loading="lazy" className="object-contain w-20 bg-gray-transparent" src={Spinner} alt="Loading..."/>
               </div>
             ) : (
             photos?.map(photo => 
               (
-                <div key={photo?.id} className="relative text-center cursor-pointer">
-                  <img loading="lazy" onMouseOut={()=>handleImageMouseOut(photo?.id)} onMouseOver={()=>handleImageHover(photo?.id)} alt="ImagePhoto" src={photo?.src.landscape} className="h-[6.5rem] w-[9.61rem] p-1 object-cover box-border rounded-xl shadow-2xl"/>
-                  <div onClick={()=>handleBackgroudImage(photo?.src.landscape)} onMouseOut={()=>handleImageMouseOut(photo?.id)} onMouseOver={()=>handleImageHover(photo?.id)} id={photo?.id+'-overlay'} className="absolute h-[6.5rem] w-[9.61rem] bottom-0 z-10 rounded-xl"/>
-                  <h2 onClick={()=>window.open(photo?.photographer_url, '_blank')} onMouseOut={()=>handleImageMouseOut(photo?.id)} onMouseOver={()=>handleImageHover(photo?.id)} id={photo?.id} className="absolute hidden w-[9.15rem] m-1 z-20 rounded-b-lg bottom-0 text-sm text-white underline font-bold bg-black bg-opacity-50 hover:bg-opacity-70 capitalize"> {photo?.photographer} </h2>
-                </div>
+                <Suspense fallback={<LoadingElement/>}>
+                  <BackgroundPhoto photo={photo} handleBackgroudImage={handleBackgroudImage}/>
+                </Suspense>
               ))
             )}
           </div>

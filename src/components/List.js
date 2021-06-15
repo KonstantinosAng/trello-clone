@@ -69,7 +69,7 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
     <Draggable index={listPosition} draggableId={listID}>
       {(provided)=>(
         <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-          <Paper className="w-80 bg-[#EBECF0] ml-5 flex flex-col flex-grow shadow-2xl rounded-md">
+          <Paper className="w-[21rem] bg-[#EBECF0] ml-5 flex flex-col flex-grow shadow-2xl rounded-md">
             <CssBaseline />
             <Suspense fallback={<LoadingElement/>}>
               <Title id={listID} listMenu={listMenu} setListMenu={setListMenu} listTitle={listTitle} setListTitle={setListTitle} open={open} setOpen={setOpen} setUpdateTitle={setUpdateTitle}/>
