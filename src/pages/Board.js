@@ -12,7 +12,6 @@ const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
 const List = React.lazy(() => import('../components/List'));
 const InputList = React.lazy(() => import('../components/InputList'));
 
-
 function Board() {
   
   const [state, dispatch] = useStateValue();
@@ -232,7 +231,7 @@ function Board() {
         } else {
           /* Handle different list drop */
           /* Store dragged card data */
-          let draggedTitle;
+          let draggedTitle, draggedLabelData=[];
           await
             db.collection(state.user.email).doc(projectID)
             .collection('lists').doc(source.droppableId)
@@ -240,6 +239,15 @@ function Board() {
             .get()
             .then(docSnapshot => {
               draggedTitle = docSnapshot.data().taskTitle;
+            })
+          await
+            db.collection(state.user.email).doc(projectID)
+            .collection('lists').doc(source.droppableId)
+            .collection('tasks').doc(draggableId)
+            .collection('labels').get().then(docSnapshot => {
+              for (const label of docSnapshot.docs) {
+                draggedLabelData.push(label.data().color)
+              }  
             })
           /* Update position on the source list */
           await 
@@ -290,20 +298,54 @@ function Board() {
                 console.error(error);
               })
           /* Add card to destination list */
+          let newDocAddedID;
           await
             db.collection(state.user.email).doc(projectID)
               .collection('lists').doc(destination.droppableId)
               .collection('tasks').add({
                     position: destination.index,
                     taskTitle: draggedTitle
-              }).then().catch(error => {
+              }).then(doc => {
+                console.log(doc)
+                newDocAddedID = doc.id
+              }).catch(error => {
                 console.error(error);
+              })
+          /* Add labels too */
+          draggedLabelData?.forEach(async (label) => {
+            await
+              db.collection(state.user.email).doc(projectID)
+              .collection('lists').doc(destination.droppableId)
+              .collection('tasks').doc(newDocAddedID).collection('labels').add({
+                color: label
+              })
+          })
+          /* Remove labels from card */
+          await
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists').doc(source.droppableId)
+              .collection('tasks').doc(draggableId)
+              .collection('labels')
+              .get()
+              .then(async labels => {
+                for (const label of labels.docs) {
+                  if (label.exists) {
+                    await 
+                      db.collection(state.user.email).doc(projectID)
+                      .collection('lists').doc(source.droppableId)
+                      .collection('tasks').doc(draggableId)
+                      .collection('labels').doc(label.id)
+                      .delete()
+                      .then()
+                      .catch(error => console.error(error))
+                  }
+                }
               })
           /* Remove card from source list */
           await
             db.collection(state.user.email).doc(projectID)
               .collection('lists').doc(source.droppableId)
-              .collection('tasks').doc(draggableId).delete()
+              .collection('tasks').doc(draggableId).delete({recursive: true})
               .then().catch(error => {
                 console.error(error);
               })
@@ -371,7 +413,7 @@ function Board() {
         db.collection(state.user.email).doc(projectID)
           .collection('lists').doc(draggableId).update({
             position: destination.index
-          }).then().catch(error=>console.log(error))        
+          }).then().catch(error=>console.log(error))     
       }
     }
   }

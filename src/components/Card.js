@@ -68,6 +68,13 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
             })
         }
       })
+    await activeProjectNameListCardCollection.doc(id).collection('labels').get().then(async labels => {
+      for (const label of labels.docs) {
+        if (label.exists) {
+          await activeProjectNameListCardCollection.doc(id).collection('labels').doc(label.id).delete().then().catch(error=>console.error(error))
+        }
+      }
+    })
     await activeProjectNameListCardCollection.doc(id).delete().then().catch(error => console.error(error));
   }
 
@@ -102,7 +109,7 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
             </div>
             <div className="flex">
               {cardMenu && (
-                <div id="card__menu__root" tabIndex={-1} className="text-gray-800 flex items-center border-t-2 border-gray-300 w-full h-[2.5rem] shadow-lg focus:outline-none">
+                <div id="card__menu__root" tabIndex={-1} className="text-gray-800 flex items-center border-t-2 border-gray-300 w-full h-[2.7rem] shadow-lg focus:outline-none">
                   <AddIcon className="bg-green-500 rounded-bl-md flex-grow h-full hover:bg-green-600 focus:outline-none active:outline-none" />
                   <LabelIcon onClick={()=>setShowLabels(!showLabels)} className="flex-grow h-full bg-indigo-500 hover:bg-indigo-600"/>
                   <DeleteIcon onClick={()=>handleDeleteCard()} className="bg-red-500 rounded-br-md flex-grow h-full focus:outline-none hover:bg-red-600" />

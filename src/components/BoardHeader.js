@@ -1,9 +1,10 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import PaletteIcon from '@material-ui/icons/Palette';
-import { useStateValue } from '../utils/StateProvider';
-import { Avatar, Button, InputBase } from '@material-ui/core';
+import { Avatar, Button, InputBase, IconButton } from '@material-ui/core';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import AddIcon from '@material-ui/icons/Add';
+import { useStateValue } from '../utils/StateProvider';
 import { actionTypes } from '../utils/reducer';
 import { auth, provider } from '../utils/firebase';
 import LoadingElement from './LoadingElement';
@@ -57,9 +58,14 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
   /* Handle focus on Profile menu when open */
   useEffect(() => {
     if (showProfile) {
-      document.getElementById('board__header__root__profile__menu').focus();
+      document.getElementById('board__header__root__profile__button').focus();
     }
   }, [showProfile])
+
+  /* Handle Add user to project */
+  function handleAddUserToProject() {
+    
+  }
 
   return (
     <div className="px-5 py-4 text-left flex items-center">
@@ -72,11 +78,14 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
         )}
       </div>
       <div className="flex items-center justify-evenly">
+        <IconButton onClick={()=>handleAddUserToProject()}className="p-3 mx-1 shadow-xs text-gray-800 active:outline-none focus:outline-none">
+          <AddIcon className="object-contain w-8 h-8"/>
+        </IconButton>
         <div className="relative flex flex-col">
           <Avatar loading="lazy" onClick={()=>handleProfileShow()} className="mx-2 object-contain shadow-xl cursor-pointer w-10 h-10" src={state?.user?.photoURL} />
-          <div id="board__header__root__profile__menu" tabIndex={-1} onBlur={()=>handleProfileShow()} className={`${showProfile ? 'flex' : 'hidden' } flex-col justify-center items-center absolute bottom-[-4.5rem] left-[-3.2rem] bg-gray-400 w-40 rounded-xl shadow-xl focus:outline-none active:outline-none`}>
+          <div  className={`${showProfile ? 'flex' : 'hidden' } flex-col justify-center items-center absolute bottom-[-4.5rem] left-[-3.2rem] bg-gray-400 w-40 rounded-xl shadow-xl focus:outline-none active:outline-none`}>
             <ArrowDropUpIcon className="w-full text-white"/>
-            <Button onClick={()=>handleChangeUser()} className="w-full cursor-pointer text-white text-md font-semibold active:outline-none focus:outline-none hover:text-gray-100"> Change User </Button>
+            <Button id="board__header__root__profile__button" tabIndex={-1} onBlur={()=>handleProfileShow()} onClick={()=>handleChangeUser()} className="w-full cursor-pointer text-white text-md font-semibold active:outline-none focus:outline-none hover:text-gray-100"> Change User </Button>
           </div>
         </div>
         <Button className="rounded bg-red-500 px-5 py-2 mx-2 text-gray-200 hover:text-white text-xs sm:text-xl font-bold active:outline-none focus:outline-none shadow-xl" onClick={()=>signOut()}> Logout </Button>
