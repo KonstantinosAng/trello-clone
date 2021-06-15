@@ -131,7 +131,7 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
             ) : (
             photos?.map(photo => 
               (
-                <Suspense fallback={<LoadingElement/>}>
+                <Suspense key={photo?.id} fallback={<LoadingElement/>}>
                   <BackgroundPhoto photo={photo} handleBackgroudImage={handleBackgroudImage}/>
                 </Suspense>
               ))

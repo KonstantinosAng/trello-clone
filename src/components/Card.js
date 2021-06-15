@@ -6,6 +6,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import LabelIcon from '@material-ui/icons/Label';
 import LoadingElement from './LoadingElement';
+import Label from './Label';
+import { useCollection } from 'react-firebase-hooks/firestore';
 const Labels = React.lazy(() => import('./Labels'));
 
 function Card({ title, id, position, activeProjectNameListCardCollection }) {
@@ -13,6 +15,7 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
   const [cardMenu, setCardMenu] = useState(false);
   const [inputValue, setInputValue] = useState(title);
   const [showLabels, setShowLabels] = useState(false);
+  const [ labels ] = useCollection(activeProjectNameListCardCollection?.doc(id).collection('labels'));
 
   /* Handle Update card title */
   const handleCardUpdate = () => {
@@ -68,13 +71,24 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
     await activeProjectNameListCardCollection.doc(id).delete().then().catch(error => console.error(error));
   }
 
-  /* Handle Labels */
+  /* Handle Mouse out */
+  function handleMouseOut() {
+    setCardMenu(false);
+    setShowLabels(false);
+  }
 
   return (
     <Draggable draggableId={id} index={position}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps} className="shadow-lg cursor-pointer">
-          <Paper onClick={()=>handleClick()} {...provided.dragHandleProps} className="m-1 border-[1px] border-gray-300 hover:bg-gray-300 rounded-md flex flex-col">
+          <Paper onMouseLeave={()=>handleMouseOut()} onClick={()=>handleClick()} {...provided.dragHandleProps} className="m-1 border-[1px] border-gray-300 hover:bg-gray-300 rounded-md flex flex-col">
+            {labels &&
+              <div className="flex flex-grow flex-wrap justify-start items-start">
+                {labels?.docs.map(label => (
+                  <Label key={label.id} color={label?.data().color} menu={false} activeProjectNameListCardLabelsCollection={null}/>
+                ))}
+              </div>
+            }
             <div className="flex flex-grow w-full items-center">
               {showInput 
                 ? 
@@ -88,17 +102,17 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
             </div>
             <div className="flex">
               {cardMenu && (
-                <div id="card__menu__root" tabIndex={-1} onMouseLeave={()=>setCardMenu(false)} className="text-gray-800 flex items-center border-t-2 border-gray-300 w-full h-[2.5rem] shadow-lg">
+                <div id="card__menu__root" tabIndex={-1} className="text-gray-800 flex items-center border-t-2 border-gray-300 w-full h-[2.5rem] shadow-lg focus:outline-none">
                   <AddIcon className="bg-green-500 rounded-bl-md flex-grow h-full hover:bg-green-600 focus:outline-none active:outline-none" />
                   <LabelIcon onClick={()=>setShowLabels(!showLabels)} className="flex-grow h-full bg-indigo-500 hover:bg-indigo-600"/>
                   <DeleteIcon onClick={()=>handleDeleteCard()} className="bg-red-500 rounded-br-md flex-grow h-full focus:outline-none hover:bg-red-600" />
                 </div>
               )}
             </div>
-            <div>
-              {true && 
+            <div className="flex">
+              {showLabels && 
                 <Suspense fallback={<LoadingElement/>}>
-                  <Labels />
+                  <Labels activeProjectNameListCardLabelsCollection={activeProjectNameListCardCollection?.doc(id).collection('labels')}/>
                 </Suspense>
               }
             </div>
