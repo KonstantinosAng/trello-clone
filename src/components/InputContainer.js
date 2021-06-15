@@ -9,7 +9,7 @@ function InputContainer({ activeProjectNameListCardCollection, inputName, cardPo
   return (
     <div className="mt-2 rounded-md shadow-inner">
       <Collapse in={open}>
-        <Suspense fallback={LoadingElement}>
+        <Suspense fallback={<LoadingElement/>}>
           <InputCard listPosition={listPosition} open={open} activeProjectNameListCardCollection={activeProjectNameListCardCollection} cardPosition={cardPosition} setOpen={setOpen}/>
         </Suspense>
       </Collapse>

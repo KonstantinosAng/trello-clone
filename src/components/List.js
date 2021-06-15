@@ -71,7 +71,7 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
         <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
           <Paper className="w-80 bg-[#EBECF0] ml-5 flex flex-col flex-grow shadow-2xl rounded-md">
             <CssBaseline />
-            <Suspense fallback={LoadingElement}>
+            <Suspense fallback={<LoadingElement/>}>
               <Title id={listID} listMenu={listMenu} setListMenu={setListMenu} listTitle={listTitle} setListTitle={setListTitle} open={open} setOpen={setOpen} setUpdateTitle={setUpdateTitle}/>
             </Suspense>
             <Droppable droppableId={listID} type="card">
@@ -79,7 +79,7 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {cards?.docs.map(doc => (
                     doc.data().taskTitle ? (
-                      <Suspense key={doc.id} fallback={LoadingElement}>
+                      <Suspense key={doc.id} fallback={<LoadingElement/>}>
                         <Card id={doc.id} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
                       </Suspense>
                     ) : (
@@ -87,7 +87,7 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
                     )
                   ))}
                   {provided.placeholder}
-                  <Suspense fallback={LoadingElement}>
+                  <Suspense fallback={<LoadingElement/>}>
                     <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
                   </Suspense>
                 </div>

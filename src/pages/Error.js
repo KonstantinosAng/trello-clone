@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHistory, useLocation } from 'react-router-dom';
+import LoadingElement from '../components/LoadingElement';
 import { auth } from '../utils/firebase';
 import LoadingPage from './LoadingPage';
 
@@ -18,7 +19,11 @@ function Error() {
   }, [location.state.stateUser, history])
   
   if (loading) {
-    return <LoadingPage />
+    return (
+      <Suspense fallback={<LoadingElement/>}>
+        <LoadingPage />
+      </Suspense>
+    )
   }
 
   return (

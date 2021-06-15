@@ -81,7 +81,7 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
         </div>
         <Button className="rounded bg-red-500 px-5 py-2 mx-2 text-gray-200 hover:text-white text-xs sm:text-xl font-bold active:outline-none focus:outline-none shadow-xl" onClick={()=>signOut()}> Logout </Button>
         <PaletteIcon onClick={()=>handleSidebar()} className="cursor-pointer text-4xl text-black hover:text-gray-500" />
-        <Suspense fallback={LoadingElement}>
+        <Suspense fallback={<LoadingElement />}>
           <Sidebar setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} setClassName={setClassName} className={className} />          
         </Suspense>
       </div>

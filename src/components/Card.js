@@ -57,16 +57,26 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
     await activeProjectNameListCardCollection.doc(id).delete().then().catch(error => console.error(error));
   }
 
+  /* Handle Context Menu */
+  function handleContextMenu(event) {
+    console.log(event);
+  }
+
+  /* Handle store clicked coordinates */
+  function handleStoreClick(event) {
+
+  }
+
   return (
     <Draggable draggableId={id} index={position}>
       {(provided) => (
-        <div ref={provided.innerRef} {...provided.draggableProps} className="shadow-lg cursor-pointer">
-          <Paper {...provided.dragHandleProps} onMouseLeave={()=>setCardMenu(false)} className="pl-3 m-1 border-[1px] border-gray-300 hover:bg-gray-300 rounded-md flex items-center">
+        <div onClick={(e)=>handleStoreClick(e)} onContextMenu={(e) => handleContextMenu(e)} ref={provided.innerRef} {...provided.draggableProps} className="shadow-lg cursor-pointer">
+          <Paper onClick={()=>handleClick()} {...provided.dragHandleProps} onMouseLeave={()=>setCardMenu(false)} className="pl-3 m-1 border-[1px] border-gray-300 hover:bg-gray-300 rounded-md flex items-center">
             {showInput 
               ? 
               <InputBase id={id} className="flex-grow" value={inputValue} onChange={(e)=>setInputValue(e.target.value)} onBlur={()=>handleBlurInput()} />
               :
-              <h3 onClick={()=>handleClick()} className="flex-grow text-lg font-semibold"> {title} </h3>
+              <h3 className="flex-grow text-lg font-semibold"> {title} </h3>
             }
             <IconButton onClick={()=>handleCardUpdate()} className="hover:bg-gray-400 text-[0.8rem] p-[0.5rem] focus:outline-none">
               <EditIcon />

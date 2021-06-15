@@ -40,7 +40,7 @@ function App() {
   /* If page loads */
   if (loading) {
     return (
-      <Suspense fallback={LoadingElement}>
+      <Suspense fallback={<LoadingElement/>}>
         <LoadingPage />
       </Suspense>
     )
@@ -49,11 +49,11 @@ function App() {
   return (
     <div className="app">
       {!user ? 
-        <Suspense fallback={LoadingElement}>
+        <Suspense fallback={<LoadingElement/>}>
           <Login /> 
         </Suspense>
       :
-        <Suspense fallback={LoadingPage}>
+        <Suspense fallback={<LoadingPage/>}>
           <Router>
             <Switch>
               <Route path="/" exact component={Home}/>

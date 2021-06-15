@@ -377,35 +377,37 @@ function Board() {
   }
 
   if (loading) {
-    return <LoadingPage />
+    return (
+      <Suspense fallback={<LoadingElement/>}>
+        <LoadingPage />
+      </Suspense>
+      )
   }
 
   return (
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
         {/* Header */}
-        <Suspense fallback={LoadingElement}>
+        <Suspense fallback={<LoadingElement />}>
           <BoardHeader projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
         </Suspense>
         {/* Lists */}
+        <Suspense fallback={<LoadingElement />}>
           <div className="flex flex-grow">
             <DragDropContext onDragEnd={(event)=>handleDrag(event)}>
               <Droppable droppableId="list__drop__zone" type="list" direction="horizontal">
                 {(provided)=>(
                   <div ref={provided.innerRef} {...provided.droppableProps} className="flex">
                     {lists?.docs.map(doc => (
-                      <Suspense key={doc.id} fallback={LoadingElement}>
-                        <List listPosition={doc.data().position} listID={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
-                      </Suspense>
+                      <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
                     ))}
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             </DragDropContext>
-            <Suspense fallback={LoadingElement}>
-              <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
-            </Suspense>
+            <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
           </div>
+          </Suspense>
       </div>
   )
 }
