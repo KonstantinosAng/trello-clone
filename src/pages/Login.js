@@ -12,34 +12,25 @@ function Login() {
   const signInRedirect = () => {
     auth.signInWithRedirect(provider);
   }
-  
-  /* Sign in with google popup */
-  // const signInPopUP = () => {
-  //   auth.signInWithPopup(provider).then((result) => {
-  //     dispatch({
-  //       type: actionTypes.SET_USER,
-  //       user: result.user
-  //     })
-  //   }).catch((error) => {
-  //     alert(error.message);
-  //   })
-  // }
 
   /* Get google redirect results */
   useEffect(() => {
-    auth.getRedirectResult().then((result) => {
-      if (result.credential) {
-        dispatch({
-          type: actionTypes.SET_USER,
-          user: result.user
-        })
-      }
-    })
+    async function signIn() {
+      await auth.getRedirectResult().then((result) => {
+        if (result.credential) {
+          dispatch({
+            type: actionTypes.SET_USER,
+            user: result.user
+          })
+        }
+      })
+    }
+    signIn()
   }, [dispatch])
 
   return (
     <div className="flex flex-col place-items-center justify-center flex-center h-screen">
-      <img className="object-contain w-80 mb-40" src={Logo} alt="App Logo"/>
+      <img loading="lazy" className="object-contain w-80 mb-40" src={Logo} alt="App Logo"/>
       <button className="rounded bg-[#0079BF] px-5 py-2 text-white text-xl font-bold active:outline-none focus:outline-none" onClick={()=>signInRedirect()}> Log In </button>
     </div>
   )

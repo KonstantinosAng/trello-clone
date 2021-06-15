@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { CssBaseline, Paper } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Title from './Title.js';
-import Card from './Card.js';
-import InputContainer from './InputContainer.js';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import LoadingElement from './LoadingElement';
+const InputContainer = React.lazy(() => import('./InputContainer.js'));
+const Title = React.lazy(() => import('./Title.js'));
+const Card = React.lazy(() => import('./Card.js'));
 
 function List({ listID, title, activeProjectNameListsCollection, listPosition }) {
 
@@ -70,19 +71,25 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
         <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
           <Paper className="w-80 bg-[#EBECF0] ml-5 flex flex-col flex-grow shadow-2xl rounded-md">
             <CssBaseline />
-            <Title id={listID} listMenu={listMenu} setListMenu={setListMenu} listTitle={listTitle} setListTitle={setListTitle} open={open} setOpen={setOpen} setUpdateTitle={setUpdateTitle}/>
+            <Suspense fallback={LoadingElement}>
+              <Title id={listID} listMenu={listMenu} setListMenu={setListMenu} listTitle={listTitle} setListTitle={setListTitle} open={open} setOpen={setOpen} setUpdateTitle={setUpdateTitle}/>
+            </Suspense>
             <Droppable droppableId={listID} type="card">
               {(provided)=>(
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {cards?.docs.map(doc => (
                     doc.data().taskTitle ? (
-                      <Card key={doc.id} id={doc.id} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
+                      <Suspense key={doc.id} fallback={LoadingElement}>
+                        <Card id={doc.id} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
+                      </Suspense>
                     ) : (
                       <span></span>
                     )
                   ))}
                   {provided.placeholder}
-                  <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
+                  <Suspense fallback={LoadingElement}>
+                    <InputContainer listPosition={listPosition} cardPosition={cardPosition} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')} inputName="Add a Card"/>
+                  </Suspense>
                 </div>
               )}
             </Droppable>
@@ -93,7 +100,6 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
             }
           </Paper>
         </div>
-
       )}
     </Draggable>
   )

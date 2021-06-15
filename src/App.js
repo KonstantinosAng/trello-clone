@@ -1,5 +1,5 @@
+import React, { Suspense } from 'react';
 import './App.css';
-import Login from './pages/Login';
 import { auth } from './utils/firebase.js';
 import { actionTypes } from './utils/reducer.js';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -11,6 +11,8 @@ import Board from './pages/Board';
 import NotFound from './pages/NotFound';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Error from './pages/Error';
+import LoadingElement from './components/LoadingElement';
+const Login = React.lazy(() => import('./pages/Login'));
 
 
 function App() {
@@ -38,22 +40,30 @@ function App() {
   /* If page loads */
   if (loading) {
     return (
-      <LoadingPage />
+      <Suspense fallback={LoadingElement}>
+        <LoadingPage />
+      </Suspense>
     )
   }
 
   return (
     <div className="app">
-      {!user ? <Login /> :
-        <Router>
-          <Switch>
-            <Route path="/" exact component={Home}/>
-            <Route path="/home" exact component={Home}/>
-            <Route path="/home/board/:projectID" exact component={Board}/>
-            <Route path="/error/:id" exact component={Error}/>
-            <Route component={NotFound}/>
-          </Switch>
-        </Router>
+      {!user ? 
+        <Suspense fallback={LoadingElement}>
+          <Login /> 
+        </Suspense>
+      :
+        <Suspense fallback={LoadingPage}>
+          <Router>
+            <Switch>
+              <Route path="/" exact component={Home}/>
+              <Route path="/home" exact component={Home}/>
+              <Route path="/home/board/:projectID" exact component={Board}/>
+              <Route path="/error/:id" exact component={Error}/>
+              <Route component={NotFound}/>
+            </Switch>
+          </Router>
+        </Suspense>
       }
     </div>
   );

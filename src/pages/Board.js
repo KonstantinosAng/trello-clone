@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import List from '../components/List';
-import BoardHeader from '../components/BoardHeader';
-import { actionTypes } from '../utils/reducer';
-import { useStateValue } from '../utils/StateProvider';
+import React, { Suspense, useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom';
-import db, { auth } from '../utils/firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import InputList from '../components/InputList';
-import LoadingPage from './LoadingPage';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { actionTypes } from '../utils/reducer';
+import { useStateValue } from '../utils/StateProvider';
+import db, { auth } from '../utils/firebase';
+import LoadingPage from './LoadingPage';
+import LoadingElement from '../components/LoadingElement';
+const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
+const List = React.lazy(() => import('../components/List'));
+const InputList = React.lazy(() => import('../components/InputList'));
 
 
 function Board() {
@@ -308,7 +309,69 @@ function Board() {
               })
         }
       } else {
-        /* Handle List Drag drop */
+        /* Handle list drag drop */
+        /* Handle same position */
+        if (destination.index === source.index) {
+          return
+        } else if (destination.index > source.index) {
+          /* Handle going to the right */
+          /* Update list position */
+          await
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists')
+              .where('position', '<=', destination.index)
+              .orderBy('position')
+              .get()
+              .then(async (docSnapshot) => {
+                for (const doc of docSnapshot.docs) {
+                  const pos = doc.data().position;
+                  if (pos > source.index && pos <= destination.index) {
+                    await 
+                      db.collection(state.user.email).doc(projectID)
+                      .collection('lists').doc(doc.id)
+                      .update({
+                        position: pos - 1
+                      }).then().catch(error => {
+                        console.error(error)
+                      })
+                  }
+                }
+              }).catch(error => {
+                console.log(error);
+              })
+        } else {
+          /* Handle going to the left */
+          /* Update list position */
+          await
+            db.collection(state.user.email).doc(projectID)
+              .collection('lists')
+              .where('position', '>=', destination.index)
+              .orderBy('position')
+              .get()
+              .then(async (docSnapshot) => {
+                for (const doc of docSnapshot.docs) {
+                  const pos = doc.data().position;
+                  if (pos >= destination.index && pos < source.index) {
+                    await 
+                      db.collection(state.user.email).doc(projectID)
+                        .collection('lists').doc(doc.id)
+                        .update({
+                          position: pos + 1
+                        }).then().catch(error => {
+                          console.error(error)
+                        })
+                  }
+                }
+              }).catch(error => {
+                console.error(error)
+              })
+        } 
+        /* Update dragged list */
+        await
+        db.collection(state.user.email).doc(projectID)
+          .collection('lists').doc(draggableId).update({
+            position: destination.index
+          }).then().catch(error=>console.log(error))        
       }
     }
   }
@@ -320,22 +383,28 @@ function Board() {
   return (
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
         {/* Header */}
-        <BoardHeader projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
+        <Suspense fallback={LoadingElement}>
+          <BoardHeader projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
+        </Suspense>
         {/* Lists */}
           <div className="flex flex-grow">
             <DragDropContext onDragEnd={(event)=>handleDrag(event)}>
-              <Droppable droppableId="list__drop_zone" type="list" direction="horizontal">
+              <Droppable droppableId="list__drop__zone" type="list" direction="horizontal">
                 {(provided)=>(
                   <div ref={provided.innerRef} {...provided.droppableProps} className="flex">
                     {lists?.docs.map(doc => (
-                      <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+                      <Suspense key={doc.id} fallback={LoadingElement}>
+                        <List listPosition={doc.data().position} listID={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+                      </Suspense>
                     ))}
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             </DragDropContext>
-            <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
+            <Suspense fallback={LoadingElement}>
+              <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
+            </Suspense>
           </div>
       </div>
   )
