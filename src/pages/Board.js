@@ -423,7 +423,6 @@ function Board() {
   /* Handle user input */
   useEffect(() => {
     if (submitEmail) {
-      console.log(userEmail)
       setSubmitEmail(false);
     }
   }, [userEmail, submitEmail])
