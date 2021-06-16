@@ -27,13 +27,15 @@ function InputProject() {
     }
 
     /* Create project with default values */
-    await db.collection(state.user.email).add({
-      projectName: cardTitle.trim(),
-      backgroundColor: 'bg-indigo-500',
-      backgroundImage: 'blank'
-    }).then().catch(err => {
-      console.error(err);
-    })
+    await
+      db.collection('users').doc(state.user.email)
+        .collection(state.user.email).add({
+          projectName: cardTitle.trim(),
+          backgroundColor: 'bg-indigo-500',
+          backgroundImage: 'blank'
+        }).then().catch(err => {
+          console.error(err);
+        })
 
     setOpen(false);
     setCardTitle('');

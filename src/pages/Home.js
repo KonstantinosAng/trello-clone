@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Avatar, Button } from '@material-ui/core';
 import { useStateValue } from '../utils/StateProvider'
@@ -11,7 +11,21 @@ const Project = React.lazy(() => import('../components/Project'));
 function Home() {
 
   const [state, dispatch] = useStateValue();
-  const [projects] = useCollection(db.collection(state.user.email));
+  const [projects] = useCollection(db.collection('users').doc(state.user.email).collection(state.user.email));
+
+  /* Handle creating user on first login */
+  useEffect(() => {
+    async function createUser() {
+      await db.collection('users').doc(state.user.email).get().then(async doc => {
+        if (!doc.exists) {
+          await db.collection('users').doc(state.user.email).set({
+            username: state.user.email
+          })
+        }
+      })
+    }
+    createUser()
+  }, [state.user.email])
   
   return (
     <div className="bg-[#111E2F] w-screen h-screen flex flex-col overflow-y-auto">

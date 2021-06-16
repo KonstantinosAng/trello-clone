@@ -55,7 +55,7 @@ function App() {
         <Suspense fallback={<LoadingPage/>}>
           <Router>
             <Switch>
-              <Route path="/" exact component={Home}/>
+              <Route path="/" exact component={Home} />
               <Route path="/home" exact component={Home}/>
               <Route path="/home/board/:projectID" exact component={Board}/>
               <Route path="/error/:id" exact component={Error}/>

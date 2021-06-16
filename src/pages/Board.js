@@ -32,10 +32,10 @@ function Board() {
   useEffect(() => {
     async function handleProjectId() {
       const params = new URLSearchParams()
-      await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
+      await db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).get().then(docSnapshot => {
         if (docSnapshot?.exists) {
           setActiveProjectName(docSnapshot.data().projectName);
-          setActiveProjectNameListsCollection(db.collection(state.user.email).doc(projectID).collection('lists'));
+          setActiveProjectNameListsCollection(db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).collection('lists'));
           params.append('q', true);
           history.push({search: params.toString()})
           dispatch({
@@ -64,7 +64,7 @@ function Board() {
   /* Pull color only on restart */
   useEffect(() => {
     async function pullBackgroundColor() {
-      await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
+      await db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).get().then(docSnapshot => {
         if (docSnapshot?.exists) {
           if (docSnapshot.data().backgroundColor !== 'blank') {
             setBackgroundColor(docSnapshot.data().backgroundColor);
@@ -78,7 +78,7 @@ function Board() {
   /* Update Background color */
   useEffect(() => {
     async function updateBackgroundColor() {
-      await db.collection(state.user.email).doc(projectID).update({
+      await db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).update({
         backgroundColor: backgroundColor
       })
     }
@@ -90,7 +90,7 @@ function Board() {
   /* Pull imageBackground only on restart */
   useEffect(() => {
     async function pullBackgroundImage() {
-      await db.collection(state.user.email).doc(projectID).get().then(docSnapshot => {
+      await db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).get().then(docSnapshot => {
         if (docSnapshot?.exists) {
           if (docSnapshot?.data().backgroundImage !== 'blank') {
             setPhotoUrl(docSnapshot.data().backgroundImage);
@@ -104,7 +104,7 @@ function Board() {
   /* Update image background */
   useEffect(() => {
     async function updateBackgroundImage() {
-      await db.collection(state.user.email).doc(projectID).update({
+      await db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).update({
         backgroundImage: photoUrl
       })
     }
@@ -131,7 +131,7 @@ function Board() {
   /* Update Project title */
   useEffect(() => {
     async function updateProjectName() {
-      await db.collection(state.user.email).doc(projectID).update({
+      await db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).update({
         projectName: activeProjectName
       })
     }
@@ -145,7 +145,7 @@ function Board() {
   /* Update new List Position */
   useEffect(() => {
     async function calculateNewListPosition() {
-      await db.collection(state.user.email).doc(projectID).collection('lists').get().then(docSnapshot => {
+      await db.collection('users').doc(state.user.email).collection(state.user.email).doc(projectID).collection('lists').get().then(docSnapshot => {
         setListPosition(docSnapshot.docs.length);
       })
     }
@@ -166,7 +166,8 @@ function Board() {
           if (destination.index > source.index) {
             /* Update when the element is dragged lower in the list */
             await
-              db.collection(state.user.email).doc(projectID)
+              db.collection('users').doc(state.user.email)
+                .collection(state.user.email).doc(projectID)
                 .collection('lists').doc(source.droppableId)
                 .collection('tasks')
                 .where('position', '<=', destination.index)
@@ -177,14 +178,15 @@ function Board() {
                     const pos = doc.data().position;
                     if (pos > source.index && pos <= destination.index) {
                       await 
-                        db.collection(state.user.email).doc(projectID)
-                        .collection('lists').doc(source.droppableId)
-                        .collection('tasks').doc(doc.id)
-                        .update({
-                          position: pos - 1
-                        }).then().catch(error => {
-                          console.error(error)
-                        })
+                        db.collection('users').doc(state.user.email)
+                          .collection(state.user.email).doc(projectID)
+                          .collection('lists').doc(source.droppableId)
+                          .collection('tasks').doc(doc.id)
+                          .update({
+                            position: pos - 1
+                          }).then().catch(error => {
+                            console.error(error)
+                          })
                     }
                   }
                   }).catch(error => {
@@ -194,7 +196,8 @@ function Board() {
             /* Update when the element is dragged higher on the list */
             /* Update pushed elements */
             await
-              db.collection(state.user.email).doc(projectID)
+              db.collection('users').doc(state.user.email)
+                .collection(state.user.email).doc(projectID)
                 .collection('lists').doc(source.droppableId)
                 .collection('tasks')
                 .where('position', '>=', destination.index)
@@ -205,7 +208,8 @@ function Board() {
                     const pos = doc.data().position;
                     if (pos >= destination.index && pos < source.index) {
                       await 
-                        db.collection(state.user.email).doc(projectID)
+                        db.collection('users').doc(state.user.email)
+                          .collection(state.user.email).doc(projectID)
                           .collection('lists').doc(source.droppableId)
                           .collection('tasks').doc(doc.id)
                           .update({
@@ -221,7 +225,8 @@ function Board() {
           }
           /*  update dragged element */
           await 
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists').doc(source.droppableId)
               .collection('tasks').doc(draggableId)
               .update({
@@ -235,25 +240,28 @@ function Board() {
           /* Store dragged card data */
           let draggedTitle, draggedLabelData=[];
           await
-            db.collection(state.user.email).doc(projectID)
-            .collection('lists').doc(source.droppableId)
-            .collection('tasks').doc(draggableId)
-            .get()
-            .then(docSnapshot => {
-              draggedTitle = docSnapshot.data().taskTitle;
-            })
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
+              .collection('lists').doc(source.droppableId)
+              .collection('tasks').doc(draggableId)
+              .get()
+              .then(docSnapshot => {
+                draggedTitle = docSnapshot.data().taskTitle;
+              })
           await
-            db.collection(state.user.email).doc(projectID)
-            .collection('lists').doc(source.droppableId)
-            .collection('tasks').doc(draggableId)
-            .collection('labels').get().then(docSnapshot => {
-              for (const label of docSnapshot.docs) {
-                draggedLabelData.push(label.data().color)
-              }  
-            })
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
+              .collection('lists').doc(source.droppableId)
+              .collection('tasks').doc(draggableId)
+              .collection('labels').get().then(docSnapshot => {
+                for (const label of docSnapshot.docs) {
+                  draggedLabelData.push(label.data().color)
+                }  
+              })
           /* Update position on the source list */
           await 
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists').doc(source.droppableId)
               .collection('tasks')
               .where('position', '>', source.index)
@@ -263,7 +271,8 @@ function Board() {
                 for (const doc of docSnapshot.docs) {
                   const pos = doc.data().position;
                   await 
-                    db.collection(state.user.email).doc(projectID)
+                    db.collection('users').doc(state.user.email)
+                      .collection(state.user.email).doc(projectID)
                       .collection('lists').doc(source.droppableId)
                       .collection('tasks').doc(doc.id)
                       .update({
@@ -277,7 +286,8 @@ function Board() {
               })
           /* Update position on the destination list */
           await
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists').doc(destination.droppableId)
               .collection('tasks')
               .where('position', '>=', destination.index)
@@ -287,7 +297,8 @@ function Board() {
                 for (const doc of docSnapshot.docs) {
                   const pos = doc.data().position;
                   await 
-                    db.collection(state.user.email).doc(projectID)
+                    db.collection('users').doc(state.user.email)
+                      .collection(state.user.email).doc(projectID)
                       .collection('lists').doc(destination.droppableId)
                       .collection('tasks').doc(doc.id)
                       .update({
@@ -302,7 +313,8 @@ function Board() {
           /* Add card to destination list */
           let newDocAddedID;
           await
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists').doc(destination.droppableId)
               .collection('tasks').add({
                     position: destination.index,
@@ -316,15 +328,17 @@ function Board() {
           /* Add labels too */
           draggedLabelData?.forEach(async (label) => {
             await
-              db.collection(state.user.email).doc(projectID)
-              .collection('lists').doc(destination.droppableId)
-              .collection('tasks').doc(newDocAddedID).collection('labels').add({
-                color: label
-              })
+              db.collection('users').doc(state.user.email)
+                .collection(state.user.email).doc(projectID)
+                .collection('lists').doc(destination.droppableId)
+                .collection('tasks').doc(newDocAddedID).collection('labels').add({
+                  color: label
+                })
           })
           /* Remove labels from card */
           await
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists').doc(source.droppableId)
               .collection('tasks').doc(draggableId)
               .collection('labels')
@@ -333,19 +347,21 @@ function Board() {
                 for (const label of labels.docs) {
                   if (label.exists) {
                     await 
-                      db.collection(state.user.email).doc(projectID)
-                      .collection('lists').doc(source.droppableId)
-                      .collection('tasks').doc(draggableId)
-                      .collection('labels').doc(label.id)
-                      .delete()
-                      .then()
-                      .catch(error => console.error(error))
+                      db.collection('users').doc(state.user.email)
+                        .collection(state.user.email).doc(projectID)
+                        .collection('lists').doc(source.droppableId)
+                        .collection('tasks').doc(draggableId)
+                        .collection('labels').doc(label.id)
+                        .delete()
+                        .then()
+                        .catch(error => console.error(error))
                   }
                 }
               })
           /* Remove card from source list */
           await
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists').doc(source.droppableId)
               .collection('tasks').doc(draggableId).delete({recursive: true})
               .then().catch(error => {
@@ -361,7 +377,8 @@ function Board() {
           /* Handle going to the right */
           /* Update list position */
           await
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists')
               .where('position', '<=', destination.index)
               .orderBy('position')
@@ -371,13 +388,14 @@ function Board() {
                   const pos = doc.data().position;
                   if (pos > source.index && pos <= destination.index) {
                     await 
-                      db.collection(state.user.email).doc(projectID)
-                      .collection('lists').doc(doc.id)
-                      .update({
-                        position: pos - 1
-                      }).then().catch(error => {
-                        console.error(error)
-                      })
+                      db.collection('users').doc(state.user.email)
+                        .collection(state.user.email).doc(projectID)
+                        .collection('lists').doc(doc.id)
+                        .update({
+                          position: pos - 1
+                        }).then().catch(error => {
+                          console.error(error)
+                        })
                   }
                 }
               }).catch(error => {
@@ -387,7 +405,8 @@ function Board() {
           /* Handle going to the left */
           /* Update list position */
           await
-            db.collection(state.user.email).doc(projectID)
+            db.collection('users').doc(state.user.email)
+              .collection(state.user.email).doc(projectID)
               .collection('lists')
               .where('position', '>=', destination.index)
               .orderBy('position')
@@ -397,7 +416,8 @@ function Board() {
                   const pos = doc.data().position;
                   if (pos >= destination.index && pos < source.index) {
                     await 
-                      db.collection(state.user.email).doc(projectID)
+                      db.collection('users').doc(state.user.email)
+                        .collection(state.user.email).doc(projectID)
                         .collection('lists').doc(doc.id)
                         .update({
                           position: pos + 1
@@ -412,7 +432,8 @@ function Board() {
         } 
         /* Update dragged list */
         await
-        db.collection(state.user.email).doc(projectID)
+        db.collection('users').doc(state.user.email)
+          .collection(state.user.email).doc(projectID)
           .collection('lists').doc(draggableId).update({
             position: destination.index
           }).then().catch(error=>console.log(error))     
