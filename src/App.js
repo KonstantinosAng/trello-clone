@@ -1,15 +1,14 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import './App.css';
 import { auth } from './utils/firebase.js';
 import { actionTypes } from './utils/reducer.js';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { useStateValue } from './utils/StateProvider.js';
-import { useEffect } from 'react';
 import LoadingPage from './pages/LoadingPage';
 import Home from './pages/Home';
 import Board from './pages/Board';
 import NotFound from './pages/NotFound';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Error from './pages/Error';
 import LoadingElement from './components/LoadingElement';
 const Login = React.lazy(() => import('./pages/Login'));

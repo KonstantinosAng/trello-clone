@@ -5,25 +5,18 @@ import { Avatar, Button, InputBase, IconButton } from '@material-ui/core';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import AddIcon from '@material-ui/icons/Add';
 import { useStateValue } from '../utils/StateProvider';
-import { actionTypes } from '../utils/reducer';
-import { auth, provider } from '../utils/firebase';
+import { signOut, signInWithRedirect } from '../utils/functions';
 import LoadingElement from './LoadingElement';
+const InputUser = React.lazy(() => import('./InputUser'));
 const Sidebar = React.lazy(() => import('./Sidebar'))
 
-function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActiveProjectName, history }) {
+function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActiveProjectName, history, setUserEmail, setSubmitEmail }) {
   const [className, setClassName] = useState('hidden -right-full');
   const [changeTitle, setChangeTitle] = useState(false);
-  const [showProfile, setShowProfile] = useState(false)
+  const [showProfile, setShowProfile] = useState(false);
+  const [userInput, setUserInput] = useState(false);
   const [state, dispatch] = useStateValue();
 
-  /* handle signout */
-  const signOut = () => {
-    auth.signOut();
-    dispatch({
-      type: actionTypes.UNSET_USER
-    })
-  }
-  
   /* Hide/show sidebar on click */
   const handleSidebar = () => {
     if (className === 'hidden -right-full') {
@@ -42,11 +35,6 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
   const handleProfileShow = () => {
     setShowProfile(!showProfile);
   }
-
-  /* Handle user change log out/log in */
-  const handleChangeUser = async () => {
-    await auth.signInWithRedirect(provider);
-  }
   
   /* Handle focus on project title input on click */
   useEffect(() => {
@@ -64,7 +52,7 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
 
   /* Handle Add user to project */
   function handleAddUserToProject() {
-    
+    setUserInput(!userInput)
   }
 
   return (
@@ -81,14 +69,19 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
         <IconButton onClick={()=>handleAddUserToProject()}className="p-3 mx-1 shadow-xs text-gray-800 active:outline-none focus:outline-none">
           <AddIcon className="object-contain w-8 h-8"/>
         </IconButton>
+        <div className={`${!userInput && 'hidden'}`}>
+          <Suspense fallback={<LoadingElement />}>
+            <InputUser setSubmitEmail={setSubmitEmail} setUserEmail={setUserEmail} userInput={userInput} setUserInput={setUserInput}/>
+          </Suspense>
+        </div>
         <div className="relative flex flex-col">
           <Avatar loading="lazy" onClick={()=>handleProfileShow()} className="mx-2 object-contain shadow-xl cursor-pointer w-10 h-10" src={state?.user?.photoURL} />
-          <div  className={`${showProfile ? 'flex' : 'hidden' } flex-col justify-center items-center absolute bottom-[-4.5rem] left-[-3.2rem] bg-gray-400 w-40 rounded-xl shadow-xl focus:outline-none active:outline-none`}>
+          <div className={`${showProfile ? 'flex' : 'hidden' } flex-col justify-center items-center absolute bottom-[-4.5rem] left-[-3.2rem] bg-white bg-opacity-20 hover:bg-opacity-30 hover:text-gray-100 w-40 rounded-xl shadow-xl focus:outline-none active:outline-none`}>
             <ArrowDropUpIcon className="w-full text-white"/>
-            <Button id="board__header__root__profile__button" tabIndex={-1} onBlur={()=>handleProfileShow()} onClick={()=>handleChangeUser()} className="w-full cursor-pointer text-white text-md font-semibold active:outline-none focus:outline-none hover:text-gray-100"> Change User </Button>
+            <Button id="board__header__root__profile__button" tabIndex={-1} onBlur={()=>handleProfileShow()} onClick={()=>signInWithRedirect()} className="w-full cursor-pointer text-white text-md font-semibold active:outline-none focus:outline-none hover:text-gray-100"> Change User </Button>
           </div>
         </div>
-        <Button className="rounded bg-red-500 px-5 py-2 mx-2 text-gray-200 hover:text-white text-xs sm:text-xl font-bold active:outline-none focus:outline-none shadow-xl" onClick={()=>signOut()}> Logout </Button>
+        <Button className="rounded bg-red-500 px-5 py-2 mx-2 text-gray-200 hover:text-white text-xs sm:text-xl font-bold active:outline-none focus:outline-none shadow-xl" onClick={()=>signOut(dispatch)}> Logout </Button>
         <PaletteIcon onClick={()=>handleSidebar()} className="cursor-pointer text-4xl text-black hover:text-gray-500" />
         <Suspense fallback={<LoadingElement />}>
           <Sidebar setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} setClassName={setClassName} className={className} />          

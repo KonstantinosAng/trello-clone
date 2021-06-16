@@ -20,6 +20,8 @@ function Board() {
   const [backgroundColor, setBackgroundColor] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const [listPosition, setListPosition] = useState(0);
+  const [userEmail, setUserEmail] = useState('');
+  const [submitEmail, setSubmitEmail] = useState(false);
   const { projectID } = useParams();
   const history = useHistory()
   const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'asc'));
@@ -418,6 +420,14 @@ function Board() {
     }
   }
 
+  /* Handle user input */
+  useEffect(() => {
+    if (submitEmail) {
+      console.log(userEmail)
+      setSubmitEmail(false);
+    }
+  }, [userEmail, submitEmail])
+
   if (loading) {
     return (
       <Suspense fallback={<LoadingElement/>}>
@@ -430,7 +440,7 @@ function Board() {
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
         {/* Header */}
         <Suspense fallback={<LoadingElement />}>
-          <BoardHeader projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
+          <BoardHeader setSubmitEmail={setSubmitEmail} setUserEmail={setUserEmail} projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
         </Suspense>
         {/* Lists */}
         <Suspense fallback={<LoadingElement />}>

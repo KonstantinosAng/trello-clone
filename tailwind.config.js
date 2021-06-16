@@ -10,7 +10,8 @@ module.exports = {
         '3xl': "2000px"
       },
       animation: {
-        'fadeOut': 'fadeOut 2s linear forwards'
+        'fadeOut': 'fadeOut 2s linear forwards',
+        'width': 'width 200ms linear forwards'
       },
       keyframes: {
         fadeOut: {
@@ -23,14 +24,33 @@ module.exports = {
             PointerEvent: 'none',
           },
         },
+        width: {
+          '0%': {
+            width: '0',
+          },
+          '50%': {
+            width: '5',
+          },
+          '100%': {
+            width: 'full',
+          }
+        }
       },
       backgroundImage: {
         'photoSidebar': "url('/src/assets/backgroundPhotos.jpg')",
-    },
+      },
+      placeholderColor: {
+        'primary': '#3490dc',
+        'secondary': '#ffed4a',
+        'danger': '#e3342f',
+      }
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      placeholderColor: ['hover', 'active'],
+    },
+    animation: ['responsive', 'motion-safe', 'motion-reduce']
   },
   plugins: [],
   important: true,

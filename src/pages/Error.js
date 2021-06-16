@@ -1,8 +1,8 @@
 import React, { Suspense, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHistory, useLocation } from 'react-router-dom';
-import LoadingElement from '../components/LoadingElement';
 import { auth } from '../utils/firebase';
+import LoadingElement from '../components/LoadingElement';
 import LoadingPage from './LoadingPage';
 
 function Error() {
