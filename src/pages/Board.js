@@ -433,7 +433,7 @@ function Board() {
           .collection(state.user.email).doc(projectID)
           .collection('lists').doc(draggableId).update({
             position: destination.index
-          }).then().catch(error=>console.log(error))     
+          }).then().catch(error=>console.log(error))
       }
     }
   }
@@ -446,10 +446,16 @@ function Board() {
           db.collection('users')
             .where('username', '==', collaborationUserEmail)
             .get()
-            .then(docSnapshot => {
+            .then(async docSnapshot => {
               if (docSnapshot.empty) {
+                /* User does not exist */
                 setCollaborationUserNotFound(true);
               } else {
+                /* User exists */
+                // await
+                //   db.collection('users').doc(state.user.email)
+                //     .collection(state.user.email).doc(projectID)
+                //     .collection('collaborationUsers')
                 setCollaborationUserNotFound(false);
               }
             }).catch(error => console.error(error))
@@ -457,7 +463,7 @@ function Board() {
       }
     }
     searchUser()
-  }, [collaborationUserEmail, submitEmail])
+  }, [collaborationUserEmail, submitEmail, state.user.email, projectID])
 
   return (
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>

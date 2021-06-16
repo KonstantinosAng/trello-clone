@@ -8,7 +8,7 @@ const InputContainer = React.lazy(() => import('./InputContainer.js'));
 const Title = React.lazy(() => import('./Title.js'));
 const Card = React.lazy(() => import('./Card.js'));
 
-function List({ listID, title, activeProjectNameListsCollection, listPosition }) {
+function List({ listID, title, activeProjectNameListsCollection, listPosition, user, projectID }) {
 
   const [ cards ] = useCollection(activeProjectNameListsCollection?.doc(listID).collection('tasks').orderBy('position', 'asc'));
   const [cardPosition, setCardPosition] = useState(0);
@@ -80,7 +80,7 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition })
                   {cards?.docs.map(doc => (
                     doc.data().taskTitle ? (
                       <Suspense key={doc.id} fallback={<LoadingElement/>}>
-                        <Card id={doc.id} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
+                        <Card id={doc.id} listID={listID} title={doc.data().taskTitle} position={doc.data().position} activeProjectNameListCardCollection={activeProjectNameListsCollection.doc(listID).collection('tasks')}/>
                       </Suspense>
                     ) : (
                       <span></span>

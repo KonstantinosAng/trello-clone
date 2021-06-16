@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import { Paper, IconButton, InputBase } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -7,14 +8,17 @@ import AddIcon from '@material-ui/icons/Add';
 import LabelIcon from '@material-ui/icons/Label';
 import LoadingElement from './LoadingElement';
 import Label from './Label';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { deleteCard } from '../utils/functions';
+import { useStateValue } from '../utils/StateProvider';
 const Labels = React.lazy(() => import('./Labels'));
 
-function Card({ title, id, position, activeProjectNameListCardCollection }) {
+function Card({ title, id, position, activeProjectNameListCardCollection, listID }) {
   const [showInput, setShowInput] = useState(false);
   const [cardMenu, setCardMenu] = useState(false);
   const [inputValue, setInputValue] = useState(title);
   const [showLabels, setShowLabels] = useState(false);
+  //eslint-disable-next-line
+  const [state, _] = useStateValue();
   const [ labels ] = useCollection(activeProjectNameListCardCollection?.doc(id).collection('labels'));
 
   /* Handle Update card title */
@@ -52,32 +56,6 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
     }
   }, [cardMenu])
 
-  /* Handle delete card instance and update docs position */
-  const handleDeleteCard = async () => {
-    await 
-      activeProjectNameListCardCollection.where('position', '>', position)
-      .orderBy('position')
-      .get()
-      .then(async (docSnapshot) => {
-        for (const doc of docSnapshot.docs) {
-          await
-            activeProjectNameListCardCollection.doc(doc.id).update({
-              position: doc.data().position - 1
-            }).then().catch(error => {
-              console.error(error);
-            })
-        }
-      })
-    await activeProjectNameListCardCollection.doc(id).collection('labels').get().then(async labels => {
-      for (const label of labels.docs) {
-        if (label.exists) {
-          await activeProjectNameListCardCollection.doc(id).collection('labels').doc(label.id).delete().then().catch(error=>console.error(error))
-        }
-      }
-    })
-    await activeProjectNameListCardCollection.doc(id).delete().then().catch(error => console.error(error));
-  }
-
   /* Handle Mouse out */
   function handleMouseOut() {
     setCardMenu(false);
@@ -112,7 +90,7 @@ function Card({ title, id, position, activeProjectNameListCardCollection }) {
                 <div id="card__menu__root" tabIndex={-1} className="text-gray-800 flex items-center border-t-2 border-gray-300 w-full h-[2.7rem] shadow-lg focus:outline-none">
                   <AddIcon className="bg-green-500 rounded-bl-md flex-grow h-full hover:bg-green-600 focus:outline-none active:outline-none" />
                   <LabelIcon onClick={()=>setShowLabels(!showLabels)} className="flex-grow h-full bg-indigo-500 hover:bg-indigo-600"/>
-                  <DeleteIcon onClick={()=>handleDeleteCard()} className="bg-red-500 rounded-br-md flex-grow h-full focus:outline-none hover:bg-red-600" />
+                  <DeleteIcon onClick={()=>deleteCard(state.user.email, state.activeProject, listID, id, position)} className="bg-red-500 rounded-br-md flex-grow h-full focus:outline-none hover:bg-red-600" />
                 </div>
               )}
             </div>
