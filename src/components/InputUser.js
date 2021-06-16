@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-function InputUser({ userInput, setUserInput, setUserEmail, setSubmitEmail }) {
+function InputUser({ userInput, setUserInput, setCollaborationUserEmail, setSubmitEmail, setCollaborationUserNotFound, collaborationUserNotFound }) {
   
   const [emailValidation, setEmailValidation] = useState('');
 
@@ -18,17 +18,19 @@ function InputUser({ userInput, setUserInput, setUserEmail, setSubmitEmail }) {
   const handleBlur = () => {
     setUserInput(false)
     document.getElementById('board__header__root__user__input').value = '';
+    setCollaborationUserNotFound(false);
   }
   
   /* Handle Email Input */
   const handleEmailInput = () => {
+    setCollaborationUserNotFound(false);
     const email = document.getElementById('board__header__root__user__input').value
     if (email === '') {
       setEmailValidation('');
       return
     }
     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
-      setUserEmail(email);
+      setCollaborationUserEmail(email);
       setEmailValidation('');
     } else {
       setEmailValidation('border-2 border-red-500');
@@ -42,15 +44,16 @@ function InputUser({ userInput, setUserInput, setUserEmail, setSubmitEmail }) {
   }
 
   return (
-    <form onSubmit={(event)=>handleSubmit(event)} className="text-black sm:text-lg font-bold">
+    <form onSubmit={(event)=>handleSubmit(event)} className="font-bold relative">
       <input 
       onBlur={() => handleBlur()}
       onChange={() => handleEmailInput()}
-      className={`${emailValidation} bg-white bg-opacity-30 rounded-lg p-3 shadow-xl placeholder-gray-600 focus:outline-none active:outline-none`} 
+      className={`${emailValidation} bg-white bg-opacity-30 rounded-lg p-3 shadow-xl placeholder-gray-600 focus:outline-none active:outline-none sm:text-lg text-black ${collaborationUserNotFound ? 'border-b-2 border-red-500' : ''}`} 
       tabIndex={-1} 
       id="board__header__root__user__input" 
       placeholder="User email"
       />
+      <h6 className={`${collaborationUserNotFound ? 'block' : 'hidden'} absolute text-red-600 px-1`}> User not found </h6>
     </form>
   )
 }

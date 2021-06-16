@@ -10,7 +10,7 @@ import LoadingElement from './LoadingElement';
 const InputUser = React.lazy(() => import('./InputUser'));
 const Sidebar = React.lazy(() => import('./Sidebar'))
 
-function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActiveProjectName, history, setUserEmail, setSubmitEmail }) {
+function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActiveProjectName, history, setCollaborationUserEmail, setSubmitEmail, collaborationUserNotFound, setCollaborationUserNotFound }) {
   const [className, setClassName] = useState('hidden -right-full');
   const [changeTitle, setChangeTitle] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -71,7 +71,14 @@ function BoardHeader({ projectID, setBackgroundColor, setPhotoUrl, name, setActi
         </IconButton>
         <div className={`${!userInput && 'hidden'}`}>
           <Suspense fallback={<LoadingElement />}>
-            <InputUser setSubmitEmail={setSubmitEmail} setUserEmail={setUserEmail} userInput={userInput} setUserInput={setUserInput}/>
+            <InputUser 
+            setSubmitEmail={setSubmitEmail}
+            setCollaborationUserEmail={setCollaborationUserEmail}
+            userInput={userInput}
+            setUserInput={setUserInput}
+            collaborationUserNotFound={collaborationUserNotFound}
+            setCollaborationUserNotFound={setCollaborationUserNotFound}
+            />
           </Suspense>
         </div>
         <div className="relative flex flex-col">

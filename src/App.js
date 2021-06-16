@@ -5,12 +5,12 @@ import './App.css';
 import { auth } from './utils/firebase.js';
 import { actionTypes } from './utils/reducer.js';
 import { useStateValue } from './utils/StateProvider.js';
-import LoadingPage from './pages/LoadingPage';
 import Home from './pages/Home';
 import Board from './pages/Board';
 import NotFound from './pages/NotFound';
 import Error from './pages/Error';
 import LoadingElement from './components/LoadingElement';
+const LoadingPage = React.lazy(() => import('./pages/LoadingPage'));
 const Login = React.lazy(() => import('./pages/Login'));
 
 
@@ -34,12 +34,12 @@ function App() {
       }
     })
     return authorization;
-  }, [dispatch, user])
+  }, [dispatch])
 
   /* If page loads */
   if (loading) {
     return (
-      <Suspense fallback={<LoadingElement/>}>
+      <Suspense fallback={<LoadingElement color="bg-white"/>}>
         <LoadingPage />
       </Suspense>
     )
@@ -48,21 +48,19 @@ function App() {
   return (
     <div className="app">
       {!user ? 
-        <Suspense fallback={<LoadingElement/>}>
+        <Suspense fallback={<LoadingElement color="bg-white"/>}>
           <Login /> 
         </Suspense>
       :
-        <Suspense fallback={<LoadingPage/>}>
-          <Router>
-            <Switch>
-              <Route path="/" exact component={Home} />
-              <Route path="/home" exact component={Home}/>
-              <Route path="/home/board/:projectID" exact component={Board}/>
-              <Route path="/error/:id" exact component={Error}/>
-              <Route component={NotFound}/>
-            </Switch>
-          </Router>
-        </Suspense>
+        <Router>
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/home" exact component={Home}/>
+            <Route path="/home/board/:projectID" exact component={Board}/>
+            <Route path="/error/:id" exact component={Error}/>
+            <Route component={NotFound}/>
+          </Switch>
+        </Router>
       }
     </div>
   );

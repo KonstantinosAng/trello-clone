@@ -1,12 +1,10 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
-import db, { auth } from '../utils/firebase';
-import LoadingPage from './LoadingPage';
+import db from '../utils/firebase';
 import LoadingElement from '../components/LoadingElement';
 const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
 const List = React.lazy(() => import('../components/List'));
@@ -20,13 +18,12 @@ function Board() {
   const [backgroundColor, setBackgroundColor] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const [listPosition, setListPosition] = useState(0);
-  const [userEmail, setUserEmail] = useState('');
+  const [collaborationUserEmail, setCollaborationUserEmail] = useState('');
+  const [collaborationUserNotFound, setCollaborationUserNotFound] = useState(false);
   const [submitEmail, setSubmitEmail] = useState(false);
   const { projectID } = useParams();
   const history = useHistory()
   const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'asc'));
-  // eslint-disable-next-line
-  const [_, loading] = useAuthState(auth);
 
   /* Search for project in database */
   useEffect(() => {
@@ -443,27 +440,33 @@ function Board() {
 
   /* Handle user input */
   useEffect(() => {
-    if (submitEmail) {
-      setSubmitEmail(false);
+    async function searchUser() {
+      if (submitEmail) {
+        await 
+          db.collection('users')
+            .where('username', '==', collaborationUserEmail)
+            .get()
+            .then(docSnapshot => {
+              if (docSnapshot.empty) {
+                setCollaborationUserNotFound(true);
+              } else {
+                setCollaborationUserNotFound(false);
+              }
+            }).catch(error => console.error(error))
+        setSubmitEmail(false);
+      }
     }
-  }, [userEmail, submitEmail])
-
-  if (loading) {
-    return (
-      <Suspense fallback={<LoadingElement/>}>
-        <LoadingPage />
-      </Suspense>
-      )
-  }
+    searchUser()
+  }, [collaborationUserEmail, submitEmail])
 
   return (
     <div id="board__root__element" className={`${backgroundColor} h-screen w-full overflow-y-auto`}>
         {/* Header */}
         <Suspense fallback={<LoadingElement />}>
-          <BoardHeader setSubmitEmail={setSubmitEmail} setUserEmail={setUserEmail} projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
+          <BoardHeader setCollaborationUserNotFound={setCollaborationUserNotFound} collaborationUserNotFound={collaborationUserNotFound} setSubmitEmail={setSubmitEmail} setCollaborationUserEmail={setCollaborationUserEmail} projectID={projectID} history={history} setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} name={activeProjectName} setActiveProjectName={setActiveProjectName}/>
         </Suspense>
         {/* Lists */}
-        <Suspense fallback={<LoadingElement />}>
+        <Suspense fallback={<LoadingElement color="bg-white"/>}>
           <div className="flex flex-grow">
             <DragDropContext onDragEnd={(event)=>handleDrag(event)}>
               <Droppable droppableId="list__drop__zone" type="list" direction="horizontal">

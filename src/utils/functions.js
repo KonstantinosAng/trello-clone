@@ -24,3 +24,7 @@ export const signIn = async (dispatch) => {
     }
   })
 }
+
+export const deleteCard = async (user, projectID) => {
+
+}

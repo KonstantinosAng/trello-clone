@@ -1,8 +1,8 @@
 import React from 'react'
 
-function LoadingElement() {
+function LoadingElement({ color }) {
   return (
-    <div className="bg-transparent w-full h-full" />
+    <div className={`${color} bg-opacity-10 w-full h-full`} />
   )
 }
 
