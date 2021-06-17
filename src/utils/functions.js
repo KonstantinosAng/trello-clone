@@ -124,9 +124,24 @@ export const createProject = async (user, projectName, backgroundColor, backgrou
 }
 
 export const createCollaborativeProject = async (addedUser, user, projectID) => {
+  /* Create project reference in addedUser */
   await db.collection('users').doc(addedUser).collection(addedUser).add({
     userID: user,
     projectID: projectID,
     collaboration: true
   })
+  /* Add user to collaborative users */
+  let userImageURL;
+  await
+    db.collection('users').doc(addedUser).get()
+      .then(doc => {
+        userImageURL = doc.data().userImageURL
+      })
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('collaborationUsers').add({
+        userName: addedUser,
+        imageURL: userImageURL
+      })
 }

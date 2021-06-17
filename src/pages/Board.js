@@ -22,9 +22,11 @@ function Board({ location }) {
   const [collaborationUserEmail, setCollaborationUserEmail] = useState('');
   const [collaborationUserNotFound, setCollaborationUserNotFound] = useState(false);
   const [submitEmail, setSubmitEmail] = useState(false);
+  const [authorImageURL, setAuthorImageURL] = useState('')
   const { projectID, collaboration, collaborationUser } = useParams();
   const history = useHistory()
   const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'asc'));
+  const [ collaborationUsers ] = useCollection(db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).collection('collaborationUsers'))
 
   useEffect(() => {
     /* Handle collaboration */
@@ -66,6 +68,8 @@ function Board({ location }) {
             })
           }
         }).catch(error => console.error(error))
+        /* Update author image */
+        await db.collection('users').doc(state.userEmail).get().then(doc => setAuthorImageURL(doc.data().userImageURL))
       }
     }
     handleProjectId()
@@ -474,7 +478,8 @@ function Board({ location }) {
         {/* Header */}
         <Suspense fallback={<LoadingElement />}>
           <BoardHeader 
-          author={!collaboration}
+          author={collaboration==="true"? false : true}
+          authorImageURL={authorImageURL}
           setCollaborationUserNotFound={setCollaborationUserNotFound}
           collaborationUserNotFound={collaborationUserNotFound} 
           setSubmitEmail={setSubmitEmail} 
@@ -484,7 +489,9 @@ function Board({ location }) {
           setPhotoUrl={setPhotoUrl} 
           setBackgroundColor={setBackgroundColor} 
           name={activeProjectName} 
-          setActiveProjectName={setActiveProjectName}/>
+          setActiveProjectName={setActiveProjectName}
+          collaborationUsers={collaborationUsers}
+          />
         </Suspense>
         {/* Lists */}
         <Suspense fallback={<LoadingElement color="bg-white"/>}>

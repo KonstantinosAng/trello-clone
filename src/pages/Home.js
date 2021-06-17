@@ -20,13 +20,14 @@ function Home() {
       await db.collection('users').doc(state.user.email).get().then(async doc => {
         if (!doc.exists) {
           await db.collection('users').doc(state.user.email).set({
-            username: state.user.email
+            username: state.user.email,
+            userImageURL: state?.user?.photoURL
           })
         }
       })
     }
     createUser()
-  }, [state.user.email])
+  }, [state.user.email, state.user.photoURL])
 
   /* Handle collaboration projects */
   useEffect(() => {
