@@ -13,10 +13,10 @@ function Error() {
   
   /* Handle If user changed on project page authorization  */
   useEffect(() => {
-    if (location.state.stateUser) {
+    if (location?.state?.stateUser) {
       history.push('/home');
     }
-  }, [location.state.stateUser, history])
+  }, [location?.state?.stateUser, history])
   
   if (loading) {
     return (

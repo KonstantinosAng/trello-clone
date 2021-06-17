@@ -51,7 +51,7 @@ function Home() {
     <div className="bg-[#111E2F] w-screen h-screen flex flex-col overflow-y-auto">
       <div className="flex flex-wrap items-center text-center justify-evenly xs:justify-end p-5">
         <h2 className="xs:mr-5 text-center self-center font-medium text-sm xs:text-lg text-blue-200"> {state?.user?.displayName} </h2>
-        <Suspense fallback={<LoadingElement color="bg-gray-500"/>}>
+        <Suspense fallback={<LoadingElement />}>
           <Avatar loading="lazy" className="xs:mr-5 object-contain cursor-pointer w-10 h-10" src={state?.user?.photoURL}/>
           <Button className="rounded bg-red-500 px-5 py-2 text-gray-300 hover:text-gray-100 text-xs sm:text-xl font-bold active:outline-none focus:outline-none" onClick={()=>signOut(dispatch)}> Logout </Button>
         </Suspense>
@@ -61,16 +61,16 @@ function Home() {
           <div className="px-5 my-10 w-full flex flex-wrap items-center justify-center md:justify-start">
             {projects?.docs.map(doc => (
               !doc.data().collaboration && (
-                <Suspense key={doc.id} fallback={<LoadingElement color={'bg-[#111E2F]'}/>}>
+                <Suspense key={doc.id} fallback={<LoadingElement />}>
                   <Project collaborationUser='null' collaboration={false} projectBackgroundColor={doc.data().backgroundColor} projectBackgroundImage={doc.data().backgroundImage} projectId={doc.id} projectName={doc.data().projectName}/>
                 </Suspense>
             )))}
             {collabProjects.map(collabProject => (
-              <Suspense key={collabProject[0].id} fallback={<LoadingElement color={'bg-[#111E2F]'}/>}>
+              <Suspense key={collabProject[0].id} fallback={<LoadingElement />}>
               <Project collaboration={true} collaborationUser={collabProject[1]} projectBackgroundColor={collabProject[0].data().backgroundColor} projectBackgroundImage={collabProject[0].data().backgroundImage} projectId={collabProject[0].id} projectName={collabProject[0].data().projectName}/>
             </Suspense>
             ))}
-            <Suspense fallback={<LoadingElement color={'bg-[#111E2F]'}/>}>
+            <Suspense fallback={<LoadingElement />}>
               <InputProject />
             </Suspense>
           </div>

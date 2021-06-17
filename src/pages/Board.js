@@ -484,9 +484,9 @@ function Board({ location }) {
           collaborationUserNotFound={collaborationUserNotFound} 
           setSubmitEmail={setSubmitEmail} 
           setCollaborationUserEmail={setCollaborationUserEmail} 
-          projectID={projectID} 
-          history={history} 
-          setPhotoUrl={setPhotoUrl} 
+          projectID={projectID}
+          history={history}
+          setPhotoUrl={setPhotoUrl}
           setBackgroundColor={setBackgroundColor} 
           name={activeProjectName} 
           setActiveProjectName={setActiveProjectName}
@@ -494,23 +494,25 @@ function Board({ location }) {
           />
         </Suspense>
         {/* Lists */}
-        <Suspense fallback={<LoadingElement color="bg-white"/>}>
-          <div className="flex flex-grow">
-            <DragDropContext onDragEnd={(event)=>handleDrag(event)}>
-              <Droppable droppableId="list__drop__zone" type="list" direction="horizontal">
-                {(provided)=>(
-                  <div ref={provided.innerRef} {...provided.droppableProps} className="flex">
-                    {lists?.docs.map(doc => (
-                      <List listPosition={doc.data().position} listID={doc.id} key={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+        <div className="flex flex-grow">
+          <DragDropContext onDragEnd={(event)=>handleDrag(event)}>
+            <Droppable droppableId="list__drop__zone" type="list" direction="horizontal">
+              {(provided)=>(
+                <div ref={provided.innerRef} {...provided.droppableProps} className="flex">
+                  {lists?.docs.map(doc => (
+                    <Suspense fallback={<LoadingElement/>} key={doc.id}>
+                      <List listPosition={doc.data().position} listID={doc.id} title={doc.data().title} activeProjectNameListsCollection={activeProjectNameListsCollection}/>
+                    </Suspense>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <Suspense fallback={<LoadingElement />}>
             <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
-          </div>
           </Suspense>
+        </div>
       </div>
   )
 }

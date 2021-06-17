@@ -11,7 +11,8 @@ module.exports = {
       },
       animation: {
         'fadeOut': 'fadeOut 2s linear forwards',
-        'width': 'width 200ms linear forwards'
+        'width': 'width 200ms linear forwards',
+        'shine': 'shine 700ms infinite'
       },
       keyframes: {
         fadeOut: {
@@ -33,6 +34,14 @@ module.exports = {
           },
           '100%': {
             width: 'full',
+          }
+        },
+        shine: {
+          '0%': {
+            transform: 'translateX(-100%)'
+          },
+          '100%': {
+            transform: 'translateX(100%)'
           }
         }
       },

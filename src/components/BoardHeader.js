@@ -68,8 +68,8 @@ function BoardHeader({ author, authorImageURL, projectID, setBackgroundColor, se
         )}
       </div>
       <div className="flex items-center justify-evenly">
-        <IconButton onClick={()=>handleAddUserToProject()} className={`${author ? 'flex' : 'hidden'} p-3 mx-1 shadow-xs active:outline-none focus:outline-none`}>
-          <AddIcon className="object-contain w-8 h-8 text-gray-600 hover:text-gray-400"/>
+        <IconButton onClick={()=>handleAddUserToProject()} className={`${author ? 'flex' : 'hidden'} p-1 mx-1 shadow-xs bg-white bg-opacity-20 hover:bg-opacity-30 hover:text-gray-100 active:outline-none focus:outline-none`}>
+          <AddIcon className="object-contain w-9 h-9 text-white"/>
         </IconButton>
         <div className={`${!userInput && 'hidden'} ${!author && 'hidden'}`}>
           <Suspense fallback={<LoadingElement />}>
@@ -100,7 +100,9 @@ function BoardHeader({ author, authorImageURL, projectID, setBackgroundColor, se
           </div>
         </div>
         <Button className="rounded bg-red-500 px-5 py-2 mx-2 text-gray-200 hover:text-white text-xs sm:text-xl font-bold active:outline-none focus:outline-none shadow-xl" onClick={()=>signOut(dispatch)}> Logout </Button>
-        <PaletteIcon onClick={()=>handleSidebar()} className="cursor-pointer text-4xl text-gray-600 hover:text-gray-400" />
+        <IconButton onClick={()=>handleSidebar()} className="p-2 bg-white bg-opacity-20 hover:bg-opacity-30 hover:text-gray-100 active:outline-none focus:outline-none shadow-xl">
+          <PaletteIcon className="cursor-pointer w-8 h-8 text-white" />
+        </IconButton>
         <Suspense fallback={<LoadingElement color=""/>}>
           <Sidebar setPhotoUrl={setPhotoUrl} setBackgroundColor={setBackgroundColor} setClassName={setClassName} className={className} />          
         </Suspense>

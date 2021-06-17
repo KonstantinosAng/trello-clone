@@ -50,7 +50,7 @@ function App() {
   return (
     <div className="app">
       {!user ? 
-        <Suspense fallback={<LoadingElement color="bg-white"/>}>
+        <Suspense fallback={<LoadingElement/>}>
           <Login /> 
         </Suspense>
       :
