@@ -25,6 +25,7 @@ export const signIn = async (dispatch) => {
   })
 }
 
+/* Handle delete Label */
 export const deleteLabel = async (user, projectID, listID, taskID, labelID) => {
   await db.collection('users').doc(user)
           .collection(user).doc(projectID)
@@ -33,6 +34,8 @@ export const deleteLabel = async (user, projectID, listID, taskID, labelID) => {
           .collection('labels').doc(labelID)
           .delete().then().catch(error=>console.error(error))
 }
+
+/* Handle delete Task */
 export const deleteCard = async (user, projectID, listID, taskID, position) => {
   const tasksCollection = db.collection('users').doc(user)
                             .collection(user).doc(projectID)
@@ -54,7 +57,7 @@ export const deleteCard = async (user, projectID, listID, taskID, position) => {
     await tasksCollection.doc(taskID).collection('labels').get().then(async labels => {
       for (const label of labels.docs) {
         if (label.exists) {
-          deleteLabel(user, projectID, listID, taskID, label.id)
+          await deleteLabel(user, projectID, listID, taskID, label.id)
         }
       }
     })
@@ -62,6 +65,7 @@ export const deleteCard = async (user, projectID, listID, taskID, position) => {
     await tasksCollection.doc(taskID).delete().then().catch(error => console.error(error));
 }
 
+/* Handle delete List */
 export const deleteList = async (user, projectID, listID, listPosition) => {
   const listCollection = db.collection('users').doc(user)
                            .collection(user).doc(projectID)
@@ -79,12 +83,50 @@ export const deleteList = async (user, projectID, listID, listPosition) => {
       }
     })
   /* Delete tasks and labels */
-  await listCollection.doc(listID).collection('tasks').get().then(tasks => {
+  await listCollection.doc(listID).collection('tasks').get().then(async tasks => {
     for (const task of tasks.docs) {
-      deleteCard()
+      if (task.exists) {
+        await deleteCard(user, projectID, listID, task.id, task.data().position)
+      }
     }
   })
   /* Delete list */
   await listCollection.doc(listID).delete().then().catch(error => console.error(error));
+}
 
+/* Handle search User */
+export const searchUser = async (username) => {
+  let userFound;
+  await 
+    db.collection('users')
+      .where('username', '==', username)
+      .get()
+      .then(async docSnapshot => {
+        if (docSnapshot.empty) {
+          /* User does not exist */
+          userFound = false
+        } else {
+          /* User exists */
+          userFound = true;
+        }
+      }).catch(error => console.error(error))
+  return userFound
+}
+
+/* Handle create Project */
+export const createProject = async (user, projectName, backgroundColor, backgroundImage, collaboration) => {
+  await db.collection('users').doc(user).collection(user).add({
+    projectName: projectName,
+    backgroundColor: backgroundColor,
+    backgroundImage: backgroundImage,
+    collaboration: false
+  })
+}
+
+export const createCollaborativeProject = async (addedUser, user, projectID) => {
+  await db.collection('users').doc(addedUser).collection(addedUser).add({
+    userID: user,
+    projectID: projectID,
+    collaboration: true
+  })
 }

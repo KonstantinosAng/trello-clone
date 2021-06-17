@@ -90,7 +90,7 @@ function Card({ title, id, position, activeProjectNameListCardCollection, listID
                 <div id="card__menu__root" tabIndex={-1} className="text-gray-800 flex items-center border-t-2 border-gray-300 w-full h-[2.7rem] shadow-lg focus:outline-none">
                   <AddIcon className="bg-green-500 rounded-bl-md flex-grow h-full hover:bg-green-600 focus:outline-none active:outline-none" />
                   <LabelIcon onClick={()=>setShowLabels(!showLabels)} className="flex-grow h-full bg-indigo-500 hover:bg-indigo-600"/>
-                  <DeleteIcon onClick={()=>deleteCard(state.user.email, state.activeProject, listID, id, position)} className="bg-red-500 rounded-br-md flex-grow h-full focus:outline-none hover:bg-red-600" />
+                  <DeleteIcon onClick={()=>deleteCard(state.userEmail, state.activeProject, listID, id, position)} className="bg-red-500 rounded-br-md flex-grow h-full focus:outline-none hover:bg-red-600" />
                 </div>
               )}
             </div>

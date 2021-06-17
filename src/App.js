@@ -10,7 +10,7 @@ import Board from './pages/Board';
 import NotFound from './pages/NotFound';
 import Error from './pages/Error';
 import LoadingElement from './components/LoadingElement';
-const LoadingPage = React.lazy(() => import('./pages/LoadingPage'));
+import LoadingPage from './pages/LoadingPage';
 const Login = React.lazy(() => import('./pages/Login'));
 
 
@@ -27,6 +27,10 @@ function App() {
           type: actionTypes.SET_USER,
           user: Auth
         })
+        dispatch({
+          type: actionTypes.SET_USER_EMAIL,
+          userEmail:  Auth.email
+        })
       } else {
         dispatch({
           type: actionTypes.UNSET_USER
@@ -39,9 +43,7 @@ function App() {
   /* If page loads */
   if (loading) {
     return (
-      <Suspense fallback={<LoadingElement color="bg-white"/>}>
-        <LoadingPage />
-      </Suspense>
+      <LoadingPage />
     )
   }
 
@@ -56,7 +58,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={Home} />
             <Route path="/home" exact component={Home}/>
-            <Route path="/home/board/:projectID" exact component={Board}/>
+            <Route path="/home/board/:projectID/:collaboration/:collaborationUser" exact component={Board}/>
             <Route path="/error/:id" exact component={Error}/>
             <Route component={NotFound}/>
           </Switch>

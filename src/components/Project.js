@@ -3,7 +3,7 @@ import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
 import { useHistory } from 'react-router-dom';
 
-function Project({ projectBackgroundImage, projectBackgroundColor, projectId, projectName }) {
+function Project({ projectBackgroundImage, projectBackgroundColor, projectId, projectName, collaboration, collaborationUser }) {
   //eslint-disable-next-line
   const [state, dispatch] = useStateValue();
   const history = useHistory();
@@ -15,7 +15,7 @@ function Project({ projectBackgroundImage, projectBackgroundColor, projectId, pr
       type: actionTypes.SET_ACTIVE_PROJECT,
       activeProject: projectId
     })
-    history.push(`home/board/${projectId}`)
+    history.push(`home/board/${projectId}/${collaboration}/${collaborationUser}`, {collaboration: collaboration, collaborationUser: collaborationUser})
   }
 
   useEffect(() => {

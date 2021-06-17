@@ -44,11 +44,11 @@ function InputUser({ userInput, setUserInput, setCollaborationUserEmail, setSubm
   }
 
   return (
-    <form onSubmit={(event)=>handleSubmit(event)} className="font-bold relative">
+    <form onSubmit={(event)=>handleSubmit(event)} className="font-bold relative bg-white bg-opacity-30 rounded-lg">
       <input 
       onBlur={() => handleBlur()}
       onChange={() => handleEmailInput()}
-      className={`${emailValidation} bg-white bg-opacity-30 rounded-lg p-3 shadow-xl placeholder-gray-600 focus:outline-none active:outline-none sm:text-lg text-black ${collaborationUserNotFound ? 'border-b-2 border-red-500' : ''}`} 
+      className={`${emailValidation} p-3 shadow-xl bg-white bg-opacity-20 rounded-lg placeholder-white focus:outline-none active:outline-none sm:text-lg text-white ${collaborationUserNotFound ? 'border-b-2 border-red-500' : ''}`} 
       tabIndex={-1} 
       id="board__header__root__user__input" 
       placeholder="User email"

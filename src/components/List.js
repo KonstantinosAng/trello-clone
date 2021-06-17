@@ -4,11 +4,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import LoadingElement from './LoadingElement';
+import { deleteList } from '../utils/functions';
+import { useStateValue } from '../utils/StateProvider';
 const InputContainer = React.lazy(() => import('./InputContainer.js'));
 const Title = React.lazy(() => import('./Title.js'));
 const Card = React.lazy(() => import('./Card.js'));
 
-function List({ listID, title, activeProjectNameListsCollection, listPosition, user, projectID }) {
+function List({ listID, title, activeProjectNameListsCollection, listPosition }) {
 
   const [ cards ] = useCollection(activeProjectNameListsCollection?.doc(listID).collection('tasks').orderBy('position', 'asc'));
   const [cardPosition, setCardPosition] = useState(0);
@@ -16,6 +18,9 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition, u
   const [open, setOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState(false);
   const [listMenu, setListMenu] = useState(false);
+  //eslint-disable-next-line
+  const [state, _] = useStateValue();
+
     
   /* Update card position */
   useEffect(() => {
@@ -48,22 +53,15 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition, u
 
   /* Handle Delete List */
   const handleListDeletion = async () => {
-    await 
-    activeProjectNameListsCollection.where('position', '>', listPosition)
-      .orderBy('position')
-      .get()
-      .then(async (docSnapshot) => {
-        for (const doc of docSnapshot.docs) {
-          await
-            activeProjectNameListsCollection.doc(doc.id).update({
-                position: doc.data().position - 1
-              }).then().catch(error => {
-                console.error(error)
-              })
-        }
-      })
-    await activeProjectNameListsCollection.doc(listID).delete().then().catch(error => console.error(error));
+    deleteList(state.userEmail, state.activeProject, listID, listPosition)
   }
+
+  /* Focus button */
+  useEffect(() => {
+    if (listMenu) {
+      document.getElementById('delete__list__root__button').focus()
+    }
+  }, [listMenu])
 
   return (
     <Draggable index={listPosition} draggableId={listID}>
@@ -94,8 +92,8 @@ function List({ listID, title, activeProjectNameListsCollection, listPosition, u
               )}
             </Droppable>
             {listMenu &&
-              <div onClick={()=>handleListDeletion()} onMouseLeave={()=>setListMenu(false)} className="p-2 flex justify-center items-center font-semibold text-lg text-gray-800 bg-red-500 rounded-b-md shadow-inner cursor-pointer hover:bg-red-600">
-                <DeleteIcon />
+              <div onClick={()=>handleListDeletion()} className="p-2 flex justify-center items-center font-semibold text-lg text-gray-800 bg-red-500 rounded-b-md shadow-inner cursor-pointer hover:bg-red-600">
+                <DeleteIcon className="focus:outline-none active:outline-none" tabIndex={-1} onBlur={()=>setListMenu(false)} id="delete__list__root__button"/>
               </div>
             }
           </Paper>
