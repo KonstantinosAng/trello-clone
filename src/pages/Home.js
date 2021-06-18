@@ -64,7 +64,7 @@ function Home() {
             {projects?.docs.map(doc => (
               !doc.data().collaboration && (
                 <Suspense key={doc.id} fallback={<LoadingElement />}>
-                  <Project collaborationUser='null' collaboration={false} projectBackgroundColor={doc.data().backgroundColor} projectBackgroundImage={doc.data().backgroundImage} projectId={doc.id} projectName={doc.data().projectName}/>
+                  <Project collaborationUser={state.user.email} collaboration={false} projectBackgroundColor={doc.data().backgroundColor} projectBackgroundImage={doc.data().backgroundImage} projectId={doc.id} projectName={doc.data().projectName}/>
                 </Suspense>
             )))}
             {collabProjects.map(collabProject => (

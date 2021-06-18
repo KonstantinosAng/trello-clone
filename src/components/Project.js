@@ -16,6 +16,10 @@ function Project({ projectBackgroundImage, projectBackgroundColor, projectId, pr
       type: actionTypes.SET_ACTIVE_PROJECT,
       activeProject: projectId
     })
+    dispatch({
+      type: actionTypes.SET_USER_EMAIL,
+      userEmail: collaborationUser
+    })
     history.push(`home/board/${projectId}/${collaboration}/${collaborationUser}`, {collaboration: collaboration, collaborationUser: collaborationUser})
   }
 

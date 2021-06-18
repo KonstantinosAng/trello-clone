@@ -37,6 +37,11 @@ function Board({ location }) {
         type: actionTypes.SET_USER_EMAIL,
         userEmail: collaborationUser
       })
+    } else {
+      dispatch({
+        type: actionTypes.SET_USER_EMAIL,
+        userEmail: state.user.email
+      })
     }
   }, [collaboration, collaborationUser, dispatch, state.user.email])
   
