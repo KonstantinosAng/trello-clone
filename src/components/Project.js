@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
-import { useHistory } from 'react-router-dom';
+import PeopleIcon from '@material-ui/icons/People';
 
 function Project({ projectBackgroundImage, projectBackgroundColor, projectId, projectName, collaboration, collaborationUser }) {
   //eslint-disable-next-line
@@ -31,10 +32,11 @@ function Project({ projectBackgroundImage, projectBackgroundColor, projectId, pr
   }, [projectBackgroundImage, projectBackgroundColor, projectId])
 
   return (
-    <div id={projectId} onClick={()=>handleActiveProject()} className={`${background} rounded-lg cursor-pointer hover:bg-opacity-700 m-5 px-5 py-16 w-full xs:max-w-xs flex flex-grow justify-center place-items-center`}>
+    <div id={projectId} onClick={()=>handleActiveProject()} className={`${background} rounded-lg cursor-pointer hover:bg-opacity-700 m-5 px-5 py-16 w-full xs:max-w-xs flex flex-grow justify-center place-items-center relative`}>
       <h3 className="text-center text-xl xs:text-2xl font-semibold">
         {projectName}
       </h3>
+      <PeopleIcon className={`${collaboration ? 'flex' : 'hidden'} absolute bottom-0 right-[0.3rem] w-10 h-10 text-white shadow-lg`}/>
     </div>
   )
 }

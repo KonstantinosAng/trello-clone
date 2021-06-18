@@ -125,6 +125,7 @@ export const createProject = async (user, projectName, backgroundColor, backgrou
   })
 }
 
+/* Handle collaborative project */
 export const createCollaborativeProject = async (addedUser, user, projectID) => {
   /* Create project reference in addedUser */
   await db.collection('users').doc(addedUser).collection(addedUser).add({
@@ -148,6 +149,7 @@ export const createCollaborativeProject = async (addedUser, user, projectID) => 
       })
 }
 
+/* Handle remove user from collaboration */
 export const removeCollaborativeUser = async (user, projectID, collaborationUserName) => {
   /* Remove user from project */
   await 
@@ -184,4 +186,18 @@ export const removeCollaborativeUser = async (user, projectID, collaborationUser
           }
         }
       }).catch(error => console.error(error))
+}
+
+/* Handle update color background */
+export const updateBackgroundColor = async (user, projectID, backgroundColor) => {
+  await db.collection('users').doc(user).collection(user).doc(projectID).update({
+    backgroundColor: backgroundColor
+  }).then().catch(error => console.error(error))
+}
+
+/* Handle update background image */
+export const updateBackgroundImage = async (user, projectID, photoUrl) => {
+  await db.collection('users').doc(user).collection(user).doc(projectID).update({
+    backgroundImage: photoUrl
+  }).then().catch(error => console.error(error))
 }

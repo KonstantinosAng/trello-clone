@@ -5,7 +5,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
 import db from '../utils/firebase';
-import { createCollaborativeProject, removeCollaborativeUser, searchUser } from '../utils/functions';
+import { createCollaborativeProject, removeCollaborativeUser, searchUser, updateBackgroundColor, updateBackgroundImage } from '../utils/functions';
 import LoadingElement from '../components/LoadingElement';
 const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
 const List = React.lazy(() => import('../components/List'));
@@ -102,13 +102,8 @@ function Board({ location }) {
 
   /* Update Background color */
   useEffect(() => {
-    async function updateBackgroundColor() {
-      await db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).update({
-        backgroundColor: backgroundColor
-      })
-    }
     if (backgroundColor !== '') {
-      updateBackgroundColor()
+      updateBackgroundColor(state.userEmail, projectID, backgroundColor)
     }
   }, [projectID, state.userEmail, backgroundColor])
 
@@ -128,13 +123,8 @@ function Board({ location }) {
 
   /* Update image background */
   useEffect(() => {
-    async function updateBackgroundImage() {
-      await db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).update({
-        backgroundImage: photoUrl
-      })
-    }
     if (photoUrl !== '') {
-      updateBackgroundImage()
+      updateBackgroundImage(state.userEmail, projectID, photoUrl)
     }
   }, [state.userEmail, projectID, photoUrl])
 
