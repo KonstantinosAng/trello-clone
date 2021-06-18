@@ -7,6 +7,7 @@ import { useStateValue } from '../utils/StateProvider';
 import db from '../utils/firebase';
 import { createCollaborativeProject, removeCollaborativeUser, searchUser, updateBackgroundColor, updateBackgroundImage } from '../utils/functions';
 import LoadingElement from '../components/LoadingElement';
+const StickyNote = React.lazy(() => import('../components/StickyNote'));
 const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
 const List = React.lazy(() => import('../components/List'));
 const InputList = React.lazy(() => import('../components/InputList'));
@@ -519,6 +520,18 @@ function Board({ location }) {
           </DragDropContext>
           <Suspense fallback={<LoadingElement />}>
             <InputList activeProjectNameListsCollection={activeProjectNameListsCollection} listPosition={listPosition}/>
+          </Suspense>
+        </div>
+        {/* Note Lists */}
+        <div className="flex">
+          <Suspense fallback={<LoadingElement />}>
+            <StickyNote color="bg-red-500" title="#Note" />
+          </Suspense>
+          <Suspense fallback={<LoadingElement />}>
+            <StickyNote color="bg-red-500" title="#Note" />
+          </Suspense>
+          <Suspense fallback={<LoadingElement />}>
+            <StickyNote color="bg-red-500" title="#Note" />
           </Suspense>
         </div>
       </div>
