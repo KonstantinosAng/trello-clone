@@ -5,12 +5,12 @@ import './App.css';
 import { auth } from './utils/firebase.js';
 import { actionTypes } from './utils/reducer.js';
 import { useStateValue } from './utils/StateProvider.js';
-import LoadingPage from './pages/LoadingPage';
 import Home from './pages/Home';
 import Board from './pages/Board';
 import NotFound from './pages/NotFound';
 import Error from './pages/Error';
 import LoadingElement from './components/LoadingElement';
+import LoadingPage from './pages/LoadingPage';
 const Login = React.lazy(() => import('./pages/Login'));
 
 
@@ -27,6 +27,10 @@ function App() {
           type: actionTypes.SET_USER,
           user: Auth
         })
+        dispatch({
+          type: actionTypes.SET_USER_EMAIL,
+          userEmail:  Auth.email
+        })
       } else {
         dispatch({
           type: actionTypes.UNSET_USER
@@ -34,14 +38,12 @@ function App() {
       }
     })
     return authorization;
-  }, [dispatch, user])
+  }, [dispatch])
 
   /* If page loads */
   if (loading) {
     return (
-      <Suspense fallback={<LoadingElement/>}>
-        <LoadingPage />
-      </Suspense>
+      <LoadingPage />
     )
   }
 
@@ -52,17 +54,15 @@ function App() {
           <Login /> 
         </Suspense>
       :
-        <Suspense fallback={<LoadingPage/>}>
-          <Router>
-            <Switch>
-              <Route path="/" exact component={Home}/>
-              <Route path="/home" exact component={Home}/>
-              <Route path="/home/board/:projectID" exact component={Board}/>
-              <Route path="/error/:id" exact component={Error}/>
-              <Route component={NotFound}/>
-            </Switch>
-          </Router>
-        </Suspense>
+        <Router>
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/home" exact component={Home}/>
+            <Route path="/home/board/:projectID/:collaboration/:collaborationUser" exact component={Board}/>
+            <Route path="/error/:id" exact component={Error}/>
+            <Route component={NotFound}/>
+          </Switch>
+        </Router>
       }
     </div>
   );
