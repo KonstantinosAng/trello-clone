@@ -5,6 +5,7 @@ import { useStateValue } from '../utils/StateProvider'
 import { signOut } from '../utils/functions';
 import db from '../utils/firebase';
 import LoadingElement from '../components/LoadingElement';
+import { useHistory } from 'react-router-dom';
 const InputProject = React.lazy(() => import('../components/InputProject'));
 const Project = React.lazy(() => import('../components/Project'));
 
@@ -13,6 +14,7 @@ function Home() {
   const [state, dispatch] = useStateValue();
   const [projects] = useCollection(db.collection('users').doc(state.user.email).collection(state.user.email));
   const [collabProjects, setCollabProjects] = useState([]);
+  const history = useHistory()
 
   /* Handle creating user on first login */
   useEffect(() => {
@@ -53,7 +55,7 @@ function Home() {
         <h2 className="xs:mr-5 text-center self-center font-medium text-sm xs:text-lg text-blue-200"> {state?.user?.displayName} </h2>
         <Suspense fallback={<LoadingElement />}>
           <Avatar loading="lazy" className="xs:mr-5 object-contain cursor-pointer w-10 h-10" src={state?.user?.photoURL}/>
-          <Button className="rounded bg-red-500 px-5 py-2 text-gray-300 hover:text-gray-100 text-xs sm:text-xl font-bold active:outline-none focus:outline-none" onClick={()=>signOut(dispatch)}> Logout </Button>
+          <Button className="rounded bg-red-500 px-5 py-2 text-gray-300 hover:text-gray-100 text-xs sm:text-xl font-bold active:outline-none focus:outline-none" onClick={()=>signOut(dispatch, history)}> Logout </Button>
         </Suspense>
       </div>
       <div className="flex flex-col justify-center items-center">

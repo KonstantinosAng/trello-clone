@@ -5,7 +5,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
 import db from '../utils/firebase';
-import { createCollaborativeProject, searchUser } from '../utils/functions';
+import { createCollaborativeProject, removeCollaborativeUser, searchUser } from '../utils/functions';
 import LoadingElement from '../components/LoadingElement';
 const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
 const List = React.lazy(() => import('../components/List'));
@@ -22,7 +22,9 @@ function Board({ location }) {
   const [collaborationUserEmail, setCollaborationUserEmail] = useState('');
   const [collaborationUserNotFound, setCollaborationUserNotFound] = useState(false);
   const [submitEmail, setSubmitEmail] = useState(false);
-  const [authorImageURL, setAuthorImageURL] = useState('')
+  const [authorImageURL, setAuthorImageURL] = useState('');
+  const [removeUser, setRemoveUser] = useState(false);
+  const [removeUserEmail, setRemoveUserEmail] = useState('')
   const { projectID, collaboration, collaborationUser } = useParams();
   const history = useHistory()
   const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'asc'));
@@ -38,12 +40,21 @@ function Board({ location }) {
     }
   }, [collaboration, collaborationUser, dispatch, state.user.email])
   
+  /* Handle remove user from collaboration */
+  useEffect(() => {
+    if (removeUser) {
+      removeCollaborativeUser(state.userEmail, state.activeProject, removeUserEmail)
+      setRemoveUser(false)
+    }
+    
+  }, [removeUser, state, removeUserEmail])
+
   /* Search for project in database */
   useEffect(() => {
     async function handleProjectId() {
       const params = new URLSearchParams()
       if (state.userEmail !== 'null') {
-        await db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).get().then(docSnapshot => {
+        await db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).get().then(async docSnapshot => {
           if (docSnapshot?.exists) {
             setActiveProjectName(docSnapshot.data().projectName);
             setActiveProjectNameListsCollection(db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).collection('lists'));
@@ -53,6 +64,8 @@ function Board({ location }) {
               type: actionTypes.SET_ACTIVE_PROJECT,
               activeProject: projectID
             })
+            /* Update author image */
+            await db.collection('users').doc(state.userEmail).get().then(doc => setAuthorImageURL(doc.data().userImageURL))
           } else {
             /* Monitor user changed */
             let stateUser = false 
@@ -68,8 +81,6 @@ function Board({ location }) {
             })
           }
         }).catch(error => console.error(error))
-        /* Update author image */
-        await db.collection('users').doc(state.userEmail).get().then(doc => setAuthorImageURL(doc.data().userImageURL))
       }
     }
     handleProjectId()
@@ -478,7 +489,7 @@ function Board({ location }) {
         {/* Header */}
         <Suspense fallback={<LoadingElement />}>
           <BoardHeader 
-          author={collaboration==="true"? false : true}
+          author={collaboration==="true" && state.user.email !== state.userEmail ? false : true}
           authorImageURL={authorImageURL}
           setCollaborationUserNotFound={setCollaborationUserNotFound}
           collaborationUserNotFound={collaborationUserNotFound} 
@@ -491,6 +502,8 @@ function Board({ location }) {
           name={activeProjectName} 
           setActiveProjectName={setActiveProjectName}
           collaborationUsers={collaborationUsers}
+          setRemoveUser={setRemoveUser}
+          setRemoveUserEmail={setRemoveUserEmail}
           />
         </Suspense>
         {/* Lists */}

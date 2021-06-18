@@ -3,15 +3,18 @@ import { provider } from '../utils/firebase.js';
 import { useStateValue } from '../utils/StateProvider.js';
 import { signInWithRedirect, signIn } from '../utils/functions';
 import Logo from '../assets/logo.png';
+import { useHistory } from 'react-router-dom';
+
 
 function Login() {
   // eslint-disable-next-line
   const [_, dispatch] = useStateValue();
+  const history = useHistory()  
   
   /* Get google redirect results */
   useEffect(() => {
-    signIn(dispatch)
-  }, [dispatch])
+    signIn(dispatch, history)
+  }, [dispatch, history])
 
   return (
     <div className="flex flex-col place-items-center justify-center flex-center h-screen">

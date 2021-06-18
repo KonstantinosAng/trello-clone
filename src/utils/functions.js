@@ -2,16 +2,18 @@ import db, { auth, provider } from "./firebase";
 import { actionTypes } from '../utils/reducer';
 
 /* Handle Sign out */
-export const signOut = (dispatch) => {
+export const signOut = (dispatch, history) => {
   auth.signOut();
   dispatch({
     type: actionTypes.UNSET_USER
   })
+  history.push('/home')
 }
 
 /* Handle user change log out/log in */
-export const signInWithRedirect = async () => {
+export const signInWithRedirect = async (history) => {
   await auth.signInWithRedirect(provider);
+  history.push('/home')
 }
 
 export const signIn = async (dispatch) => {
@@ -144,4 +146,42 @@ export const createCollaborativeProject = async (addedUser, user, projectID) => 
         userName: addedUser,
         imageURL: userImageURL
       })
+}
+
+export const removeCollaborativeUser = async (user, projectID, collaborationUserName) => {
+  /* Remove user from project */
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('collaborationUsers')
+      .where('userName', '==', collaborationUserName)
+      .get()
+      .then(async users => {
+        if (!users.empty) {
+          for (const userDoc of users.docs) {
+            console.log(user, projectID, collaborationUserName)
+            await 
+              db.collection('users').doc(user)
+                .collection(user).doc(projectID)
+                .collection('collaborationUsers').doc(userDoc.id).delete().then().catch(error => console.error(error))
+          }
+        }
+      }).catch(error => console.error(error))
+
+  /* Remove project from user */
+  await 
+    db.collection('users').doc(collaborationUserName)
+      .collection(collaborationUserName)
+      .where('projectID', '==', projectID)
+      .get()
+      .then(async projects => {
+        if (!projects.empty) {
+          for (const project of projects.docs) {
+            await 
+              db.collection('users').doc(collaborationUserName)
+                .collection(collaborationUserName).doc(project.id)
+                .delete().then().catch(error => console.error(error))
+          }
+        }
+      }).catch(error => console.error(error))
 }
