@@ -7,6 +7,7 @@ import { useStateValue } from '../utils/StateProvider';
 import db from '../utils/firebase';
 import { createCollaborativeProject, removeCollaborativeUser, searchUser, updateBackgroundColor, updateBackgroundImage } from '../utils/functions';
 import LoadingElement from '../components/LoadingElement';
+const InputNote = React.lazy(() => import('../components/InputNote'));
 const StickyNote = React.lazy(() => import('../components/StickyNote'));
 const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
 const List = React.lazy(() => import('../components/List'));
@@ -30,6 +31,7 @@ function Board({ location }) {
   const history = useHistory()
   const [ lists ] = useCollection(activeProjectNameListsCollection?.orderBy('position', 'asc'));
   const [ collaborationUsers ] = useCollection(db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).collection('collaborationUsers'))
+  const [ notes ] = useCollection(db.collection('users').doc(state.userEmail).collection(state.userEmail).doc(projectID).collection('notes'))
 
   useEffect(() => {
     /* Handle collaboration */
@@ -523,16 +525,24 @@ function Board({ location }) {
           </Suspense>
         </div>
         {/* Note Lists */}
-        <div className="flex">
+        <div className="flex flex-grow relative">
           <Suspense fallback={<LoadingElement />}>
-            <StickyNote color="bg-red-500" title="#Note" />
+            <InputNote user={state.userEmail} projectID={state.activeProject}/>
           </Suspense>
-          <Suspense fallback={<LoadingElement />}>
-            <StickyNote color="bg-red-500" title="#Note" />
-          </Suspense>
-          <Suspense fallback={<LoadingElement />}>
-            <StickyNote color="bg-red-500" title="#Note" />
-          </Suspense>
+          {notes?.docs.map(doc => (
+            <Suspense key={doc.id} fallback={<LoadingElement />}>
+              <StickyNote 
+                color={doc.data().color}
+                title={doc.data().title}
+                notes={doc.data().notes}
+                id={doc.id}
+                x={doc.data().x}
+                y={doc.data().y}
+                user={state.userEmail}
+                projectID={state.activeProject}
+              />
+            </Suspense>
+          ))}
         </div>
       </div>
   )

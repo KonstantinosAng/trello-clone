@@ -201,3 +201,62 @@ export const updateBackgroundImage = async (user, projectID, photoUrl) => {
     backgroundImage: photoUrl
   }).then().catch(error => console.error(error))
 }
+
+/* Handle create new note */
+export const createNewNote = async (user, projectID) => {
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('notes').add({
+        x: 215,
+        y: 315,
+        title: '#Note',
+        notes: 'Write your notes here...',
+        color: 'bg-yellow-500',
+      }).then().catch(error => console.error(error))
+}
+
+/* Handle update Note position on move */
+export const updateNotePosition = async (user, projectID, noteID, x, y) => {
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('notes').doc(noteID).update({x: x, y: y })
+      .then().catch(error => console.error(error))
+}
+
+/* Handle update Note color */
+export const updateNoteColor = async (user, projectID, noteID, color) => {
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('notes').doc(noteID).update({color: color})
+      .then().catch(error => console.error(error))
+}
+
+/* Handle update Note title */
+export const updateNoteTitle = async (user, projectID, noteID, title) => {
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('notes').doc(noteID).update({title: title})
+      .then().catch(error => console.error(error))
+}
+
+/* Handle update Note notes */
+export const updateNoteNotes = async (user, projectID, noteID, notes) => {
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('notes').doc(noteID).update({notes: notes})
+      .then().catch(error => console.error(error))
+}
+
+/* Handle delete Note from project */
+export const deleteNote = async (user, projectID, noteID) => {
+  await 
+    db.collection('users').doc(user)
+      .collection(user).doc(projectID)
+      .collection('notes').doc(noteID)
+      .delete().then().catch(error => console.error(error))
+}
