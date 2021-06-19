@@ -7,7 +7,6 @@ import PaletteIcon from '@material-ui/icons/Palette';
 import { deleteNote, updateNoteColor, updateNoteNotes, updateNotePosition, updateNoteTitle } from '../utils/functions';
 
 function StickyNote({ user, projectID, color, title, id, x, y, notes }) {
-
   const [titleValue, setTitleValue] = useState(title);
   const [notesValue, setNotesValue] = useState(notes);
   const [showInput, setShowInput] = useState(false);
@@ -24,7 +23,6 @@ function StickyNote({ user, projectID, color, title, id, x, y, notes }) {
   /* Update note title and notes */
   useEffect(() => {
     if (!showInput) {
-      console.log('render')
       updateNoteTitle(user, projectID, id, titleValue)
       updateNoteNotes(user, projectID, id, notesValue)
     }

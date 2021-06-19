@@ -4,11 +4,10 @@ import SearchIcon from '@material-ui/icons/Search';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Spinner from '../assets/spinner.gif';
 import LoadingElement from './LoadingElement';
+import { BackgroundColor } from './BackgroundColor.js'; 
 const BackgroundPhoto = React.lazy(() => import('./BackgroundPhoto.js'));
-const BackgroundColor = React.lazy(() => import('./BackgroundColor.js'));
 
-function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
-  
+export const Sidebar = React.memo(({ setBackgroundColor, setClassName, setPhotoUrl, className }) => {
   const [showCarret, setShowCarret] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [showPhotos, setShowPhotos] = useState(false);
@@ -90,7 +89,7 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
   }, [className])
   
   return (
-    <div id="board__header__root__sidebar" tabIndex={-1} className={`absolute top-0 w-[20.7rem] bg-gray-200 h-screen overflow-y-scroll overflow-x-hidden ${className} active:outline-none focus:outline-none`}>
+    <div id="board__header__root__sidebar" tabIndex={-1} className={`absolute z-50 top-0 w-[20.7rem] bg-gray-200 h-screen overflow-y-scroll overflow-x-hidden ${className} active:outline-none focus:outline-none`}>
       <div className="flex flex-col ml-2">
         <div className="flex justify-evenly w-full items-center h-14 border-b-2 border-gray-300">
           <ArrowBackIosIcon onClick={()=>handleShowCarret()} className={`cursor-pointer ${showCarret ? "flex" : "hidden"}`}/>
@@ -141,6 +140,4 @@ function Sidebar({ setBackgroundColor, setClassName, setPhotoUrl, className }) {
       </div>
     </div>
   )
-}
-
-export default Sidebar
+})

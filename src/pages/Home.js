@@ -10,7 +10,7 @@ const InputProject = React.lazy(() => import('../components/InputProject'));
 const Project = React.lazy(() => import('../components/Project'));
 
 function Home() {
-
+  console.log('render')
   const [state, dispatch] = useStateValue();
   const [projects] = useCollection(db.collection('users').doc(state.user.email).collection(state.user.email));
   const [collabProjects, setCollabProjects] = useState([]);
@@ -65,12 +65,12 @@ function Home() {
               !doc.data().collaboration && (
                 <Suspense key={doc.id} fallback={<LoadingElement />}>
                   <Project collaborationUser={state.user.email} collaboration={false} projectBackgroundColor={doc.data().backgroundColor} projectBackgroundImage={doc.data().backgroundImage} projectId={doc.id} projectName={doc.data().projectName}/>
-                </Suspense>
+                 </Suspense>
             )))}
             {collabProjects.map(collabProject => (
               <Suspense key={collabProject[0].id} fallback={<LoadingElement />}>
-              <Project collaboration={true} collaborationUser={collabProject[1]} projectBackgroundColor={collabProject[0].data().backgroundColor} projectBackgroundImage={collabProject[0].data().backgroundImage} projectId={collabProject[0].id} projectName={collabProject[0].data().projectName}/>
-            </Suspense>
+                <Project collaboration={true} collaborationUser={collabProject[1]} projectBackgroundColor={collabProject[0].data().backgroundColor} projectBackgroundImage={collabProject[0].data().backgroundImage} projectId={collabProject[0].id} projectName={collabProject[0].data().projectName}/>
+              </Suspense>
             ))}
             <Suspense fallback={<LoadingElement />}>
               <InputProject />

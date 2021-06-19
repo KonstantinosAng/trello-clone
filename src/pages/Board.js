@@ -7,14 +7,14 @@ import { useStateValue } from '../utils/StateProvider';
 import db from '../utils/firebase';
 import { createCollaborativeProject, removeCollaborativeUser, searchUser, updateBackgroundColor, updateBackgroundImage } from '../utils/functions';
 import LoadingElement from '../components/LoadingElement';
+import { BoardHeader } from '../components/BoardHeader'
 const InputNote = React.lazy(() => import('../components/InputNote'));
 const StickyNote = React.lazy(() => import('../components/StickyNote'));
-const BoardHeader = React.lazy(() => import('../components/BoardHeader'));
 const List = React.lazy(() => import('../components/List'));
 const InputList = React.lazy(() => import('../components/InputList'));
 
 function Board({ location }) {
-  
+
   const [state, dispatch] = useStateValue();
   const [activeProjectName, setActiveProjectName] = useState('');
   const [activeProjectNameListsCollection, setActiveProjectNameListsCollection] = useState();
@@ -56,7 +56,7 @@ function Board({ location }) {
     }
     
   }, [removeUser, state, removeUserEmail])
-
+  
   /* Search for project in database */
   useEffect(() => {
     async function handleProjectId() {

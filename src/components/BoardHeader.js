@@ -8,10 +8,10 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { useStateValue } from '../utils/StateProvider';
 import { signOut, signInWithRedirect } from '../utils/functions';
 import LoadingElement from './LoadingElement';
+import { Sidebar } from './Sidebar';
 const InputUser = React.lazy(() => import('./InputUser'));
-const Sidebar = React.lazy(() => import('./Sidebar'))
 
-function BoardHeader({ 
+export const BoardHeader = React.memo(({
   author, 
   authorImageURL, 
   projectID, 
@@ -27,7 +27,7 @@ function BoardHeader({
   collaborationUsers, 
   setRemoveUser,
   setRemoveUserEmail
- }) {
+ }) => {
 
   const [className, setClassName] = useState('hidden -right-full');
   const [changeTitle, setChangeTitle] = useState(false);
@@ -162,6 +162,4 @@ function BoardHeader({
       </div>
     </div>
   )
-}
-
-export default BoardHeader
+})

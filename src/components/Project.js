@@ -4,7 +4,7 @@ import { actionTypes } from '../utils/reducer';
 import { useStateValue } from '../utils/StateProvider';
 import PeopleIcon from '@material-ui/icons/People';
 
-function Project({ projectBackgroundImage, projectBackgroundColor, projectId, projectName, collaboration, collaborationUser }) {
+export default function Project({ projectBackgroundImage, projectBackgroundColor, projectId, projectName, collaboration, collaborationUser }) {
   //eslint-disable-next-line
   const [state, dispatch] = useStateValue();
   const history = useHistory();
@@ -44,5 +44,3 @@ function Project({ projectBackgroundImage, projectBackgroundColor, projectId, pr
     </div>
   )
 }
-
-export default Project
