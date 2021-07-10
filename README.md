@@ -2,6 +2,10 @@
 
 A [trello clone](https://trello.com) using [ReactJS](https://reactjs.org), React Context API, React DnD, TailwindCSS, Material UI Icons & Styled Components for the frontend, Firebase for authorization, authentication and storing and Pexels for the image data.
 
+<div align="center">
+  <h1><a href="http://kangelopoulos.ddns.net/trello"> DEMO </a></h1>
+</div>
+
 ## Requirements
 
 Inside the repo there is a [.env.example file](./.env.example). Rename it to .env and fill the values with your own api keys.
