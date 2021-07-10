@@ -10,7 +10,6 @@ const InputProject = React.lazy(() => import('../components/InputProject'));
 const Project = React.lazy(() => import('../components/Project'));
 
 function Home() {
-  console.log('render')
   const [state, dispatch] = useStateValue();
   const [projects] = useCollection(db.collection('users').doc(state.user.email).collection(state.user.email));
   const [collabProjects, setCollabProjects] = useState([]);
