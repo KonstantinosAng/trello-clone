@@ -3,7 +3,7 @@
 A [trello clone](https://trello.com) using [ReactJS](https://reactjs.org), React Context API, React DnD, TailwindCSS, Material UI Icons & Styled Components for the frontend, Firebase for authorization, authentication and storing and Pexels for the image data.
 
 <div align="center">
-  <h1><a href="http://kangelopoulos.ddns.net/trello"> DEMO </a></h1>
+  <h1><a href="http://kangelopoulos.ddns.net:8080/trello"> DEMO </a></h1>
 </div>
 
 ## Requirements
@@ -45,7 +45,7 @@ To build the .exe file for your own OS run the following code:
 ```bash
 npm run make
 
-or 
+or
 
 yarn run make
 ```
