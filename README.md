@@ -52,7 +52,6 @@ yarn run make
 
 ## Examples
 
-Electron app
 <br>
 <p align="center">
   <img src="img/img1.png"/>
