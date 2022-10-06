@@ -3,7 +3,7 @@
 A [trello clone](https://trello.com) using [ReactJS](https://reactjs.org), React Context API, React DnD, TailwindCSS, Material UI Icons & Styled Components for the frontend, Firebase for authorization, authentication and storing and Pexels for the image data.
 
 <div align="center">
-  <h1><a href="https://constantine.dev:8080/trello"> DEMO </a></h1>
+  <h1><a href="https://trello.constantine.dev"> DEMO </a></h1>
 </div>
 
 ## Requirements
