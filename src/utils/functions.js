@@ -315,7 +315,7 @@ export const updateNotePosition = async (user, projectID, noteID, x, y) => {
 		.collection('notes')
 		.doc(noteID)
 		.update({ x: x, y: y })
-		.then()
+		.then(() => true)
 		.catch(error => console.error(error))
 }
 
